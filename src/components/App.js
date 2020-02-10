@@ -1,11 +1,8 @@
 import React from 'react';
+import Echo from './Echo';
 
-function App() {
-  return (
-    <div>
-      <h1>Hola</h1>
-    </div>
-  );
-}
+const App = () => (
+  <Echo />
+)
 
 export default App;
