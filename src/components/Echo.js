@@ -12,43 +12,44 @@ class Echo extends Component {
         let echotest = null;
         let janus = null;
         let that = this;
-
         Janus.init({
-          dependencies: Janus.useDefaultDependencies(),
-          callback: () => {
-            janus = new Janus({
-                server: "http://" + window.location.hostname + ":8088/janus",
-                success: () => {
-                    janus.attach({
-                        plugin: "janus.plugin.echotest",
-                        success: (pluginHandle) => {
-                            echotest = pluginHandle;
-                            let body = { "audio": true, "video": true };
-                            echotest.send({ "message": body });
-                            echotest.createOffer({
-                                success: (jsep) => {
-                                    echotest.send({ "message": body, "jsep": jsep });
-                                },
-                                error: (error) => {
-                                    Janus.error("WebRTC error:", error);
-                                }          
-                            })
-                        },
-                        onmessage: (msg, jsep) => {
-                            if(jsep !== undefined && jsep !== null) {
-                                echotest.handleRemoteJsep({jsep: jsep});
+            debug: "all",
+            dependencies: Janus.useDefaultDependencies(),
+            callback: () => {
+                janus = new Janus({
+                    server: "http://ec2-34-216-69-198.us-west-2.compute.amazonaws.com:8088/janus",
+                    success: () => {
+                        janus.attach({
+                            plugin: "janus.plugin.echotest",
+                            success: (pluginHandle) => {                                
+                                echotest = pluginHandle;
+                                let body = { "audio": true, "video": true };
+                                Janus.debug("Sending message (" + JSON.stringify(body) + ")");
+                                echotest.send({ "message": body });
+                                echotest.createOffer({
+                                    success: (jsep) => {
+                                        echotest.send({ "message": body, "jsep": jsep });
+                                    },
+                                    error: (error) => {
+                                        Janus.error("WebRTC error:", error);
+                                    }          
+                                })
+                            },
+                            onmessage: (msg, jsep) => {
+                                if(jsep !== undefined && jsep !== null) {
+                                    echotest.handleRemoteJsep({jsep: jsep});
+                                }
+                            },
+                            onlocalstream: (stream) => {
+                                Janus.attachMediaStream(that.localVid.current, stream)
+                            },
+                            onremotestream: (stream) => {
+                                Janus.attachMediaStream(that.remoteVid.current, stream)
                             }
-                        },
-                        onlocalstream: (stream) => {
-                            Janus.attachMediaStream(that.localVid.current, stream)
-                        },
-                        onremotestream: (stream) => {
-                            Janus.attachMediaStream(that.remoteVid.current, stream)
-                        }
-                    })
-                }
-            })
-          }          
+                        })
+                    }
+                })
+            }          
         });
     }
 
