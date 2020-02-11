@@ -17,7 +17,7 @@ class Echo extends Component {
             dependencies: Janus.useDefaultDependencies(),
             callback: () => {
                 janus = new Janus({
-                    server: "https://ec2-34-216-69-198.us-west-2.compute.amazonaws.com:8089/janus",
+                    server: "https://maurovelazquez.com:8089/janus",
                     success: () => {
                         janus.attach({
                             plugin: "janus.plugin.echotest",
