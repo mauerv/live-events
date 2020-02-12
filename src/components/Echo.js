@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Janus } from 'janus-gateway';
 
-class Echo extends Component {
+export default class Echo extends Component {
     constructor(props) {
         super(props);
         this.localVid = React.createRef();
@@ -12,12 +12,13 @@ class Echo extends Component {
         let echotest = null;
         let janus = null;
         let that = this;
+        console.log(process.env.REACT_APP_JANUS_SERVER)
         Janus.init({
             debug: "all",
             dependencies: Janus.useDefaultDependencies(),
             callback: () => {
                 janus = new Janus({
-                    server: "https://maurovelazquez.com:8089/janus",
+                    server: process.env.REACT_APP_JANUS_SERVER,
                     success: () => {
                         janus.attach({
                             plugin: "janus.plugin.echotest",
@@ -79,5 +80,3 @@ class Echo extends Component {
         )
     }
 }
-
-export default Echo;
