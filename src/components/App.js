@@ -1,8 +1,8 @@
 import React from 'react';
-import Echo from './Echo';
+import VideoRoom from './VideoRoom';
 
 const App = () => (
-  <Echo />
+  <VideoRoom />
 )
 
 export default App;
