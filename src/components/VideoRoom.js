@@ -7,17 +7,23 @@ export default class VideoRoom extends Component {
     constructor(props) {
         super(props);
         this.localVid = React.createRef();
+        this.remoteVid_0 = React.createRef();
+        this.remoteVid_1 = React.createRef();
+        this.remoteVid_2 = React.createRef();
+        this.remoteVid_3 = React.createRef();
+        this.remoteVid_4 = React.createRef();
 
         this.state = {
+            janus: null,
             sfutest: null,
             room: 1234,
             id: '',
             privateId: '',
             username: '',
             opaqueId: `videoroomtest-${Janus.randomString(12)}`,
+            feeds: [],
         }
     }
-
 
     handleChange = e => this.setState({ username: e.target.value })
 
@@ -35,6 +41,10 @@ export default class VideoRoom extends Component {
             };
             sfutest.send({ "message": register });
         }
+    }
+
+    updateJanus = janusInstance => {
+        this.setState({ janus: janusInstance });
     }
 
     updatePluginHandle = pluginHandle => {
@@ -58,9 +68,7 @@ export default class VideoRoom extends Component {
                 audioSend: useAudio, 
                 videoSend: true,
             },
-            succeess: (jsep) => {
-                Janus.debug("Got published SDP!");
-                Janus.debug(jsep);
+            success: (jsep) => {
                 const publish = {
                     "request": "configure",
                     "audio": useAudio,
@@ -77,15 +85,87 @@ export default class VideoRoom extends Component {
         })
     }
 
+    newRemoteFeed = (id, display, audio, video) => {
+        const { 
+            janus, 
+            opaqueId, 
+            room, 
+            privateId,
+            feeds,
+        } = this.state;
+        const that = this;
+        let remoteFeed = null;
+
+        janus.attach({
+            plugin: "janus.plugin.videoroom",
+            opaqueId: opaqueId,
+            success: (pluginHandle) => {
+                console.log("I attached the remote plugin.")
+                remoteFeed = pluginHandle;
+                const subscribe = { 
+                    "request": "join",
+                    "room": room,
+                    "ptype": "subscriber",
+                    "feed": id,
+                    "private_id": privateId,
+                };
+                remoteFeed.videoCodec = video;
+                remoteFeed.send({ "message": subscribe });
+            },
+            error: (error) => {
+
+            },
+            onmessage: (msg, jsep) => {
+                if (jsep !== undefined && jsep !== null) {
+                    remoteFeed.createAnswer({
+                        jsep: jsep,
+                        media: { audioSend: false, videoSend: false },
+                        success: (jsep) => {
+                            const body = { "request": "start", "room": room };
+                            remoteFeed.send({ "message": body , "jsep": jsep });
+                        }
+                    })
+                }
+
+                const event = msg['videoroom'];
+                if (event !== undefined && event !== null) {
+                    if (event === "attached") {
+                        console.log("I am a subscriber yo")
+                        for(let i = 0; i < 5; i++) {
+							if(feeds[i] === undefined || feeds[i] === null) {
+								feeds[i] = remoteFeed;
+								remoteFeed.rfindex = i;
+								break;
+                            }
+                            remoteFeed.rfid = msg["id"];
+                            remoteFeed.rfdisplay = msg["display"];
+						}
+                    } 
+                }
+            },
+            webrtcState: (on) => {
+                console.log("Janus says this WebRTC PeerConnection (feed #" + remoteFeed.rfindex + ") is " + (on ? "up" : "down") + " now");
+            },
+            onremotestream: (stream) => {
+                console.log("I have a remote stream")
+                Janus.attachMediaStream(that.remoteVid_0.current, stream);
+            },
+            oncleanup: () => {
+
+            }
+        })
+    }
+
     componentDidMount() {
         const that = this;
 
         Janus.init({
-            debug: true,
+            debug: false,
             callback: () => {
                 const janus = new Janus({
                     server: process.env.REACT_APP_JANUS_SERVER,
                     success: () => {
+                        that.updateJanus(janus);
                         janus.attach({
                             plugin: 'janus.plugin.videoroom',
                             opaqueId: that.opaqueId,    
@@ -93,18 +173,39 @@ export default class VideoRoom extends Component {
                                 that.updatePluginHandle(pluginHandle);
                             },
                             onmessage: (msg, jsep) => {
+                                console.log(msg);
+                                const { sfutest } = that.state;
+
+                                if (jsep !== undefined && jsep !== null) {
+                                    sfutest.handleRemoteJsep({ jsep: jsep });
+                                }
+
                                 const event = msg['videoroom'];
-                                if (event != undefined && event != null) {
+
+                                if (event !== undefined && event !== null) {
                                     if (event === "joined") {
                                         that.updateId(msg['id']);
                                         that.updatePrivateId(msg['private_id']);
                                         that.publishOwnFeed(true);
+                                        if (msg['publishers'] !== undefined && msg['publishers'] !== null) {
+                                            let list = msg['publishers'];
+                                            for(var f in list) {
+                                                const id = list[f]['id'];
+                                                const display = list[f]['display'];
+                                                const audio = list[f]['audio_codec'];
+                                                const video =list[f]['video_codec'];
+                                                that.newRemoteFeed(id, display, audio, video);
+                                            }
+                                        }
                                     }
                                 }
                             },
                             onlocalstream: (stream) => {
                                 Janus.attachMediaStream(that.localVid.current, stream)
                             },
+                            oncleanup: () => {
+                                Janus.log(" ::: Got a cleanup notification: we are unpublished now :::");
+                            }
                         })
                     }                        
                 })
@@ -113,6 +214,8 @@ export default class VideoRoom extends Component {
     }
 
     render() {
+        const { feeds } = this.state;
+
         return (
             <div>
                 <h1>Video Room</h1>
@@ -131,12 +234,14 @@ export default class VideoRoom extends Component {
                         autoPlay
                         playsInline
                         controls={false}
-                    ></video>             
-                    <VideoStream />
-                    <VideoStream />
-                    <VideoStream />
-                    <VideoStream />
-                    <VideoStream />
+                    ></video>  
+                    <h3>Remote 01</h3>
+                    <video 
+                        ref={this.remoteVid_0}
+                        autoPlay
+                        playsInline
+                        controls={false}
+                    ></video>   
                 </div>
             </div>
         )

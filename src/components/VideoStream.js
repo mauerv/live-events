@@ -1,9 +1,10 @@
 import React from 'react';
 
-const VideoStream = () => (
+const VideoStream = ref => (
     <div>
         <h2>Stream</h2>
         <video 
+            ref={ref}
             autoPlay
             playsInline
             controls={false}    
