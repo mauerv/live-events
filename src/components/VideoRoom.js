@@ -100,7 +100,6 @@ export default class VideoRoom extends Component {
             plugin: "janus.plugin.videoroom",
             opaqueId: opaqueId,
             success: (pluginHandle) => {
-                console.log("I attached the remote plugin.")
                 remoteFeed = pluginHandle;
                 const subscribe = { 
                     "request": "join",
@@ -130,7 +129,6 @@ export default class VideoRoom extends Component {
                 const event = msg['videoroom'];
                 if (event !== undefined && event !== null) {
                     if (event === "attached") {
-                        console.log("I am a subscriber yo")
                         for(let i = 0; i < 5; i++) {
 							if(feeds[i] === undefined || feeds[i] === null) {
 								feeds[i] = remoteFeed;
@@ -147,7 +145,6 @@ export default class VideoRoom extends Component {
                 console.log("Janus says this WebRTC PeerConnection (feed #" + remoteFeed.rfindex + ") is " + (on ? "up" : "down") + " now");
             },
             onremotestream: (stream) => {
-                console.log("I have a remote stream")
                 Janus.attachMediaStream(that.remoteVid_0.current, stream);
             },
             oncleanup: () => {
@@ -164,6 +161,12 @@ export default class VideoRoom extends Component {
             callback: () => {
                 const janus = new Janus({
                     server: process.env.REACT_APP_JANUS_SERVER,
+                    iceServers: [
+                        'stun.ekiga.net', 
+                        'stun.l.google.com:19302', 
+                        'stun2.l.google.com:19302', 
+                        'stun.ideasip.com'
+                    ],
                     success: () => {
                         that.updateJanus(janus);
                         janus.attach({
