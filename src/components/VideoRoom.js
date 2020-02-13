@@ -162,10 +162,8 @@ export default class VideoRoom extends Component {
                 const janus = new Janus({
                     server: process.env.REACT_APP_JANUS_SERVER,
                     iceServers: [
-                        'stun.ekiga.net', 
-                        'stun.l.google.com:19302', 
-                        'stun2.l.google.com:19302', 
-                        'stun.ideasip.com'
+                        'http://stun.l.google.com:19302', 
+                        'http://stun2.l.google.com:19302', 
                     ],
                     success: () => {
                         that.updateJanus(janus);
