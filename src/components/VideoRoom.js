@@ -145,7 +145,7 @@ export default class VideoRoom extends Component {
                 console.log("Janus says this WebRTC PeerConnection (feed #" + remoteFeed.rfindex + ") is " + (on ? "up" : "down") + " now");
             },
             onremotestream: (stream) => {
-                Janus.attachMediaStream(that.remoteVid_0.current, stream);
+                Janus.attachMediaStream(that[`remoteVid_${remoteFeed.rfindex}`].current, stream);
             },
             oncleanup: () => {
 
@@ -198,6 +198,17 @@ export default class VideoRoom extends Component {
                                                 that.newRemoteFeed(id, display, audio, video);
                                             }
                                         }
+                                    } else if (event === "event") {
+                                        if (msg['publishers'] !== undefined && msg['publishers'] !== null) {
+                                            let list = msg['publishers'];
+                                            for(var f in list) {
+                                                const id = list[f]['id'];
+                                                const display = list[f]['display'];
+                                                const audio = list[f]['audio_codec'];
+                                                const video =list[f]['video_codec'];
+                                                that.newRemoteFeed(id, display, audio, video);
+                                            }
+                                        }
                                     }
                                 }
                             },
@@ -237,12 +248,12 @@ export default class VideoRoom extends Component {
                         controls={false}
                     ></video>  
                     <h3>Remote 01</h3>
-                    <video 
-                        ref={this.remoteVid_0}
-                        autoPlay
-                        playsInline
-                        controls={false}
-                    ></video>   
+                    <VideoStream ref={this.remoteVid_0} /> 
+                    <VideoStream ref={this.remoteVid_1} /> 
+                    <VideoStream ref={this.remoteVid_2} /> 
+                    <VideoStream ref={this.remoteVid_3} /> 
+                    <VideoStream ref={this.remoteVid_4} /> 
+                    <VideoStream ref={this.remoteVid_5} /> 
                 </div>
             </div>
         )

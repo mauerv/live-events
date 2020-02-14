@@ -1,6 +1,6 @@
 import React from 'react';
 
-const VideoStream = ref => (
+const VideoStream = React.forwardRef((props, ref) => (
     <div>
         <h2>Stream</h2>
         <video 
@@ -10,6 +10,6 @@ const VideoStream = ref => (
             controls={false}    
         ></video>
     </div>
-);
+));
 
 export default VideoStream;
