@@ -3,6 +3,8 @@ import { Janus } from 'janus-gateway';
 
 import VideoStream from './VideoStream';
 
+import iceServers from '../iceServers';
+
 export default class VideoRoom extends Component {
     constructor(props) {
         super(props);
@@ -161,10 +163,7 @@ export default class VideoRoom extends Component {
             callback: () => {
                 const janus = new Janus({
                     server: process.env.REACT_APP_JANUS_SERVER,
-                    iceServers: [
-                        { url: 'stun:stun.l.google.com:19302' }, 
-                        { url: 'stun:stun2.l.google.com:19302' }, 
-                    ],
+                    iceServers: iceServers,
                     success: () => {
                         that.updateJanus(janus);
                         janus.attach({
