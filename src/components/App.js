@@ -4,6 +4,7 @@ import { Janus } from 'janus-gateway';
 import RoomList from './RoomList/RoomList';
 import Register from './Register/Register';
 import Loading from './Loading/Loading';
+import Header from './Header/Header';
 
 import iceServers from '../iceServers';
 
@@ -14,42 +15,33 @@ class App extends Component {
 
     this.state = {
       janus: null,
-      sfuHandle: null,
+      handles: {},
       username: "",
+      activeRoom: 2345,
       registered: false,
-      room: 2345,
       roomList: [],
-      opaqueId: `videoroomtest-${Janus.randomString(12)}`,
     }
   }
 
-  updateJanus = janusInstance => {
-    this.setState({ janus: janusInstance });
-  }
-
-  updatePluginHandle = pluginHandle => {
-    this.setState({ sfuHandle: pluginHandle });
-  }
-
   updateRoomList = () => {
+    console.log("I was called once");
     const that = this;
-    const { sfuHandle } = this.state;
+    const handle = this.state.handles[this.state.activeRoom];
 
-    const body = { "request": "list" };
-    sfuHandle.send({ 
-      "message": body,
+    handle.send({ 
+      "message": { "request": "list" },
       success: roomList => {
         roomList = roomList.list;
         roomList.forEach(room => room.participants = []);
         roomList.forEach(room => {
           if (room.num_participants > 0) {
-            sfuHandle.send({
+            handle.send({
               message: {
                 request: "listparticipants",
                 room: room.room
               },
-              success: participants => {
-                room.participants = participants.participants;
+              success: participants => {    
+                room.participants = participants.participants.filter(p => p.publisher === true);                            
                 that.setState({ roomList: roomList });
               }
             })
@@ -62,62 +54,107 @@ class App extends Component {
 
 	handleChange = e => this.setState({ username: e.target.value })
 
-	handleSubmit = e => {
-		e.preventDefault();
-    this.registerInRoom();
-	}
+	registerHandles = e => {
+    e.preventDefault();
 
-	registerInRoom = () => {
-    const { username, room, sfuHandle } = this.state;
+    const { janus, username, activeRoom } = this.state;
+    const that = this;
+    const rooms = [1234, 2345, 3456, 4567, 5678];
 
-		if (username.length > 0) {
-			const register = {
-				"request": "join",
-				"room": room,
-				"ptype": "publisher",
-				"display": username
-      };
-			sfuHandle.send({ "message": register });
-		}
+    if (username.length === 0) {
+      return;
+    }
+
+    rooms.forEach(room => {
+      janus.attach({
+        plugin: "janus.plugin.videoroom",
+        success: pluginHandle => {
+          let newState = { ...that.state.handles }
+          newState[room] = pluginHandle;
+          that.setState({ handles: newState });
+
+          const register = {
+            "request": "join",
+            "room": room,
+            "ptype": "publisher",
+            "display": username
+          };
+          if (room === activeRoom) {
+            that.publishOwnFeed(true);
+          }
+          pluginHandle.send({ "message": register });
+        },
+        onmessage: (msg, jsep) => {
+          const handle = that.state.handles[room];
+
+          if (jsep !== undefined && jsep !== null) {
+            handle.handleRemoteJsep({ jsep: jsep });
+          }
+
+          const event = msg['videoroom'];
+
+          if (event !== undefined && event !== null) {
+            if (event === "joined") {
+              that.setState({ registered: true });
+            } else if (event === "event") {
+              if (msg.room === room && msg.publishers !== undefined && msg.publishers !== null) {
+                console.log("New publisher in the room.")
+                setTimeout(() => that.updateRoomList(), 200);
+              }
+              if (msg.unpublished === "ok") {
+                this.publishOwnFeed(true);
+              }
+              if (msg.room === room && typeof msg.unpublished === "number" ) {
+                console.log("Someone stopped publishing.", msg);
+                setTimeout(() => that.updateRoomList(), 200);
+              }
+              if (msg.configured === "ok") {
+                console.log("You started publishing.");
+                setTimeout(() => that.updateRoomList(), 200);     
+              }
+            } 
+          }
+        },
+        onlocalstream: stream => {
+        }
+      })
+    });
   }
 
-  updateRegisteredRoom = room => {
-    const { sfuHandle } = this.state;
-
-    this.setState({ room: room });
-    sfuHandle.send({ "message": { "request": "leave" }})  
+  unpublish = room => {
+    const handle = this.state.handles[room];
+    handle.send({ "message": { "request": "unpublish" }})  
   }
 
-  unpublish = () => {
-    const { sfuHandle } = this.state;
-    sfuHandle.send({ "message": { "request": "unpublish" }})  
+  publishNew = () => {
+    this.setState({ activeRoom: 2345 });
+    this.publishOwnFeed(true);
   }
 
-  publish = () => {
-   this.publishOwnFeed(true)
-  }
-  
   publishOwnFeed = useAudio => {
-    const { sfuHandle } = this.state;
-    sfuHandle.createOffer({
+    const { activeRoom } = this.state;
+    const handle = this.state.handles[activeRoom];
+    const that = this;
+
+    handle.createOffer({
       media: {
         audioRecv: false,
         videoRecv: false,
         audioSend: useAudio,
         videoSend: true,
       },
-      success: (jsep) => {
+      success: (jsep) => {        
         const publish = {
-          "request": "configure",
+          "request": "publish",
           "audio": useAudio,
           "video": true,
         };
-        sfuHandle.send({ "message": publish, "jsep": jsep });
+        handle.send({ "message": publish, "jsep": jsep });
       },
       error: (error) => {
         Janus.error("WebRTC error:", error);
         if (useAudio) {
-            this.publishOwnFeed(false);
+            that.publishOwnFeed(false);
         }
       }
     })
@@ -132,59 +169,10 @@ class App extends Component {
         const janus = new Janus({
           server: process.env.REACT_APP_JANUS_SERVER,
           iceServers: iceServers,
-          success: () => {
-            that.updateJanus(janus);
-            janus.attach({
-              plugin: 'janus.plugin.videoroom',
-              opaqueId: that.opaqueId,
-              success: (pluginHandle) => { 
-                that.updatePluginHandle(pluginHandle);
-                that.updateRoomList();
-              },
-              error: (error) => {
-                
-              },
-              onmessage: (msg, jsep) => {
-                const { sfuHandle } = that.state;
-
-                if (jsep !== undefined && jsep !== null) {
-                    sfuHandle.handleRemoteJsep({ jsep: jsep });
-                }
-
-                const event = msg['videoroom'];
-
-                if (event !== undefined && event !== null) {
-                  if (event === "joined") {
-                    that.setState({ registered: true });
-                    that.publishOwnFeed(true);
-                  }
-                  if (event === "event") {
-                    if (msg.error !== undefined) {
-                      console.log("Failed", msg.error);
-                    }
-                    if (msg.unpublished === "ok") {
-                      console.log("You unpublished");
-                    }
-                    if (msg.configured === "ok") {
-                      console.log("You published");
-                    }
-                  }
-                }
-              },
-              onlocalstream: stream => {
-                that.updateRoomList();
-              }
-            })
-          },
-					error: error => {
-						Janus.error(error);
-					},
-					destroyed: () => {
-						
-					}
-        })
+          success: () => that.setState({ janus: janus })
+        });
       }
-    })
+    });
   }
 
   render() {
@@ -199,9 +187,12 @@ class App extends Component {
       return (
         <div>
           {registered ? (
-            <RoomList roomList={roomList} onRoomClick={this.updateRegisteredRoom}/>
+            <div>
+              <Header />
+              <RoomList roomList={roomList} onRoomClick={this.updateActiveRoom}/>
+            </div>
           ) : (
-            <Register onChange={this.handleChange} onSubmit={this.handleSubmit} value={username} />
+            <Register onChange={this.handleChange} onSubmit={this.registerHandles} value={username} />
           )}
         </div>
       );
@@ -209,6 +200,12 @@ class App extends Component {
       return <Loading />
     }
    
+  }
+
+  updateActiveRoom = room => {
+    let temp = this.state.activeRoom;
+    this.setState({ activeRoom: room })
+    this.unpublish(temp);
   }
 } 
 

@@ -1,7 +1,16 @@
 import React from 'react';
 
+import { 
+    ParticipantContainer,
+    ParticipantName,
+    ParticipantStatus,
+} from './styles';
+
 const ParticipantListItem = ({ participant }) => (
-    <p>{participant.display}</p>
+    <ParticipantContainer>
+        <ParticipantStatus></ParticipantStatus>
+        <ParticipantName>{participant.display}</ParticipantName>
+    </ParticipantContainer>
 );
 
 export default ParticipantListItem;
