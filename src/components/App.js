@@ -1,21 +1,26 @@
 import React, { Component } from 'react';
 import { Janus } from 'janus-gateway';
 
-import VideoRoom from './VideoRoom';
 import RoomList from './RoomList/RoomList';
-import SimpleForm from './SimpleForm/SimpleForm';
+import Register from './Register/Register';
 import Loading from './Loading/Loading';
 
 import iceServers from '../iceServers';
 
 class App extends Component {
-  state = {
-    janus: null,
-    sfuHandle: null,
-    username: "",
-    room: 1234,
-    roomList: [],
-    opaqueId: `videoroomtest-${Janus.randomString(12)}`,
+  constructor(props) {
+    super(props);
+    this.localVid = React.createRef();
+
+    this.state = {
+      janus: null,
+      sfuHandle: null,
+      username: "",
+      registered: false,
+      room: 2345,
+      roomList: [],
+      opaqueId: `videoroomtest-${Janus.randomString(12)}`,
+    }
   }
 
   updateJanus = janusInstance => {
@@ -26,53 +31,103 @@ class App extends Component {
     this.setState({ sfuHandle: pluginHandle });
   }
 
-  updateRoomList = roomList => {
+  updateRoomList = () => {
+    const that = this;
     const { sfuHandle } = this.state;
-    roomList.forEach(room => room.participants = []);
 
-    roomList.forEach(room => {
-      if (room.num_participants > 0) {
-        sfuHandle.send({
-          message: {
-            request: "listparticipants",
-            room: room.room
-          },
-          success: participants => {
-            room.participants = participants.participants;
-            this.setState({ roomList: roomList });
+    const body = { "request": "list" };
+    sfuHandle.send({ 
+      "message": body,
+      success: roomList => {
+        roomList = roomList.list;
+        roomList.forEach(room => room.participants = []);
+        roomList.forEach(room => {
+          if (room.num_participants > 0) {
+            sfuHandle.send({
+              message: {
+                request: "listparticipants",
+                room: room.room
+              },
+              success: participants => {
+                room.participants = participants.participants;
+                that.setState({ roomList: roomList });
+              }
+            })
           }
         })
+        that.setState({ roomList: roomList });
       }
-    })
-    this.setState({ roomList: roomList });
+    });
   }
 
 	handleChange = e => this.setState({ username: e.target.value })
 
 	handleSubmit = e => {
 		e.preventDefault();
-		const { username, room, sfuHandle } = this.state;
-
-		this.registerInRoom(username, room, sfuHandle)
+    this.registerInRoom();
 	}
 
-	registerInRoom = (username, room, sfuHandle) => {
+	registerInRoom = () => {
+    const { username, room, sfuHandle } = this.state;
+
 		if (username.length > 0) {
 			const register = {
 				"request": "join",
 				"room": room,
 				"ptype": "publisher",
 				"display": username
-			};
+      };
 			sfuHandle.send({ "message": register });
 		}
-	}
+  }
+
+  updateRegisteredRoom = room => {
+    const { sfuHandle } = this.state;
+
+    this.setState({ room: room });
+    sfuHandle.send({ "message": { "request": "leave" }})  
+  }
+
+  unpublish = () => {
+    const { sfuHandle } = this.state;
+    sfuHandle.send({ "message": { "request": "unpublish" }})  
+  }
+
+  publish = () => {
+   this.publishOwnFeed(true)
+  }
+  
+  publishOwnFeed = useAudio => {
+    const { sfuHandle } = this.state;
+    sfuHandle.createOffer({
+      media: {
+        audioRecv: false,
+        videoRecv: false,
+        audioSend: useAudio,
+        videoSend: true,
+      },
+      success: (jsep) => {
+        const publish = {
+          "request": "configure",
+          "audio": useAudio,
+          "video": true,
+        };
+        sfuHandle.send({ "message": publish, "jsep": jsep });
+      },
+      error: (error) => {
+        Janus.error("WebRTC error:", error);
+        if (useAudio) {
+            this.publishOwnFeed(false);
+        }
+      }
+    })
+  }
 
   componentDidMount() {
     const that =  this;
 
     Janus.init({
-      debug: true,
+      debug: false,
       callback: () => {
         const janus = new Janus({
           server: process.env.REACT_APP_JANUS_SERVER,
@@ -82,25 +137,49 @@ class App extends Component {
             janus.attach({
               plugin: 'janus.plugin.videoroom',
               opaqueId: that.opaqueId,
-              success: (pluginHandle) => {
-                this.updatePluginHandle(pluginHandle);
-                const body = { "request": "list" };
-                pluginHandle.send({ 
-                  "message": body,
-                  success: (roomList) => {
-                    that.updateRoomList(roomList.list);
-                  } 
-                })
+              success: (pluginHandle) => { 
+                that.updatePluginHandle(pluginHandle);
+                that.updateRoomList();
               },
               error: (error) => {
                 
               },
+              onmessage: (msg, jsep) => {
+                const { sfuHandle } = that.state;
+
+                if (jsep !== undefined && jsep !== null) {
+                    sfuHandle.handleRemoteJsep({ jsep: jsep });
+                }
+
+                const event = msg['videoroom'];
+
+                if (event !== undefined && event !== null) {
+                  if (event === "joined") {
+                    that.setState({ registered: true });
+                    that.publishOwnFeed(true);
+                  }
+                  if (event === "event") {
+                    if (msg.error !== undefined) {
+                      console.log("Failed", msg.error);
+                    }
+                    if (msg.unpublished === "ok") {
+                      console.log("You unpublished");
+                    }
+                    if (msg.configured === "ok") {
+                      console.log("You published");
+                    }
+                  }
+                }
+              },
+              onlocalstream: stream => {
+                that.updateRoomList();
+              }
             })
           },
-					error: function(error) {
+					error: error => {
 						Janus.error(error);
 					},
-					destroyed: function() {
+					destroyed: () => {
 						
 					}
         })
@@ -111,22 +190,25 @@ class App extends Component {
   render() {
     const { 
 			roomList, 
-			sfuHandle,
-			username,
+			janus,
+      username,
+      registered,
 		} = this.state;
 
-    if (sfuHandle !== null) {
+    if (janus !== null) {
       return (
         <div>
-          <SimpleForm onChange={this.handleChange} onSubmit={this.handleSubmit} value={username} />
-          <RoomList roomList={roomList}/>
+          {registered ? (
+            <RoomList roomList={roomList} onRoomClick={this.updateRegisteredRoom}/>
+          ) : (
+            <Register onChange={this.handleChange} onSubmit={this.handleSubmit} value={username} />
+          )}
         </div>
       );
     } else {
-      return (
-        <Loading />
-      );
+      return <Loading />
     }
+   
   }
 } 
 

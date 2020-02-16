@@ -1,6 +1,6 @@
 import React from 'react';
 
-const ParticipantListItem = participant => (
+const ParticipantListItem = ({ participant }) => (
     <p>{participant.display}</p>
 );
 

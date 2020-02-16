@@ -1,22 +1,16 @@
-import React, { Component } from 'react';
+import React from 'react';
 
 import ParticipantListItem from './ParticipantListItem';
 
-class ParticipantList extends Component {
-    render() {
-        const { participants } = this.props;
+const ParticipantList = ({ participants }) => (
+    <div>
+        {participants.map(participant => (
+            <ParticipantListItem 
+                key={participant.id}
+                participant={participant}
+            />
+        ))}
+    </div>
+) 
 
-        return (
-            <div>
-                {participants.map(participant => (
-                    <ParticipantListItem 
-                        key={participant.id}
-                        participant={participant}
-                    />
-                ))}
-            </div>
-        );
-    }
-} 
-
-export default ParticipantList;
+export default ParticipantList

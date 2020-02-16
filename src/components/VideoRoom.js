@@ -173,7 +173,6 @@ export default class VideoRoom extends Component {
                                 that.updatePluginHandle(pluginHandle);
                             },
                             onmessage: (msg, jsep) => {
-                                console.log(msg);
                                 const { sfutest } = that.state;
 
                                 if (jsep !== undefined && jsep !== null) {
