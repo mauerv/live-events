@@ -1,20 +1,19 @@
 import React, { Component } from 'react';
 import { Janus } from 'janus-gateway';
 
-import RoomList from './RoomList/RoomList';
-import Register from './Register/Register';
-import Loading from './Loading/Loading';
-import Header from './Header/Header';
+import RoomList from '../RoomList/RoomList';
+import Register from '../Register/Register';
+import Loading from '../Loading/Loading';
+import Header from '../Header/Header';
 
-import iceServers from '../constants/iceServers';
+import iceServers from '../../constants/iceServers';
 
-class App extends Component {
+class BaseApp extends Component {
   constructor(props) {
     super(props);
     this.localVid = React.createRef();
 
     this.state = {
-      janus: null,
       handles: {},
       username: "",
       activeRoom: 2345,
@@ -56,7 +55,8 @@ class App extends Component {
 	registerHandles = e => {
     e.preventDefault();
 
-    const { janus, username, activeRoom } = this.state;
+    const { username, activeRoom } = this.state;
+    const { janus } = this.props;
     const that = this;
     const rooms = [1234, 2345, 3456, 4567, 5678];
 
@@ -165,7 +165,9 @@ class App extends Component {
         const janus = new Janus({
           server: process.env.REACT_APP_JANUS_SERVER,
           iceServers: iceServers,
-          success: () => that.setState({ janus: janus })
+          success: () => {
+            that.props.onSetJanus(janus)
+          },
         });
       }
     });
@@ -174,10 +176,10 @@ class App extends Component {
   render() {
     const { 
 			roomList, 
-			janus,
       username,
       registered,
-		} = this.state;
+    } = this.state;
+    const { janus } = this.props;
 
     if (janus !== null) {
       return (
@@ -205,4 +207,4 @@ class App extends Component {
   }
 } 
 
-export default App;
+export default BaseApp;
