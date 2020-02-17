@@ -6,7 +6,7 @@ import Register from './Register/Register';
 import Loading from './Loading/Loading';
 import Header from './Header/Header';
 
-import iceServers from '../iceServers';
+import iceServers from '../constants/iceServers';
 
 class App extends Component {
   constructor(props) {
@@ -24,7 +24,6 @@ class App extends Component {
   }
 
   updateRoomList = () => {
-    console.log("I was called once");
     const that = this;
     const handle = this.state.handles[this.state.activeRoom];
 
@@ -98,18 +97,15 @@ class App extends Component {
               that.setState({ registered: true });
             } else if (event === "event") {
               if (msg.room === room && msg.publishers !== undefined && msg.publishers !== null) {
-                console.log("New publisher in the room.")
                 setTimeout(() => that.updateRoomList(), 200);
               }
               if (msg.unpublished === "ok") {
                 this.publishOwnFeed(true);
               }
               if (msg.room === room && typeof msg.unpublished === "number" ) {
-                console.log("Someone stopped publishing.", msg);
                 setTimeout(() => that.updateRoomList(), 200);
               }
               if (msg.configured === "ok") {
-                console.log("You started publishing.");
                 setTimeout(() => that.updateRoomList(), 200);     
               }
             } 
