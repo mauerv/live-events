@@ -13,16 +13,13 @@ class BaseApp extends Component {
     super(props);
     this.localVid = React.createRef();
 
-    this.state = {
-      handles: {},
-      roomList: [],
-    }
+    this.state = { roomList: [] }
   }
 
   updateRoomList = () => {
     const that = this;
-    const { user } = this.props;
-    const handle = this.state.handles[user.activeRoom];
+    const { user, handles } = this.props;
+    const handle = handles[user.activeRoom];
 
     handle.send({ 
       "message": { "request": "list" },
@@ -64,10 +61,7 @@ class BaseApp extends Component {
       janus.attach({
         plugin: "janus.plugin.videoroom",
         success: pluginHandle => {
-          let newState = { ...that.state.handles }
-          newState[room] = pluginHandle;
-          that.setState({ handles: newState });
-
+          that.props.onSetHandle(room, pluginHandle);
           const register = {
             "request": "join",
             "room": room,
@@ -79,12 +73,12 @@ class BaseApp extends Component {
         },
         error: error => console.log(error),
         onmessage: (msg, jsep) => {
-          const handle = that.state.handles[room];
+          const handle = that.props.handles[room];
 
           if (jsep !== undefined && jsep !== null) {
             handle.handleRemoteJsep({ jsep: jsep });
           }
-
+          
           const event = msg['videoroom'];
 
           if (event !== undefined && event !== null) {
@@ -116,13 +110,13 @@ class BaseApp extends Component {
   }
 
   unpublish = room => {
-    const handle = this.state.handles[room];
+    const handle = this.props.handles[room];
     handle.send({ "message": { "request": "unpublish" }})  
   }
 
   publishOwnFeed = useAudio => {
     const { user } = this.props;
-    const handle = this.state.handles[user.activeRoom];
+    const handle = this.props.handles[user.activeRoom];
     const that = this;
 
     handle.createOffer({

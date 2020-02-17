@@ -1,4 +1,5 @@
 import { doSetJanus } from './janusActions';
+import { doSetHandle } from './handlesActions';
 import { 
     doSetUsername, 
     doSetActiveRoom,
@@ -7,6 +8,7 @@ import {
 
 export {
     doSetJanus,
+    doSetHandle,
     doSetUsername,
     doSetActiveRoom,
     doSetRegisteredStatus,
