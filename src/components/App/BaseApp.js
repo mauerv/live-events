@@ -15,16 +15,14 @@ class BaseApp extends Component {
 
     this.state = {
       handles: {},
-      username: "",
-      activeRoom: 2345,
-      registered: false,
       roomList: [],
     }
   }
 
   updateRoomList = () => {
     const that = this;
-    const handle = this.state.handles[this.state.activeRoom];
+    const { user } = this.props;
+    const handle = this.state.handles[user.activeRoom];
 
     handle.send({ 
       "message": { "request": "list" },
@@ -50,21 +48,19 @@ class BaseApp extends Component {
     });
   }
 
-	handleChange = e => this.setState({ username: e.target.value })
+	handleChange = e => this.props.onSetUsername(e.target.value);
 
 	registerHandles = e => {
     e.preventDefault();
-
-    const { username, activeRoom } = this.state;
-    const { janus } = this.props;
+    const { janus, user } = this.props;
     const that = this;
     const rooms = [1234, 2345, 3456, 4567, 5678];
 
-    if (username.length === 0) {
+    if (user.username.length === 0) {
       return;
     }
 
-    rooms.forEach(room => {
+    rooms.forEach(room => {      
       janus.attach({
         plugin: "janus.plugin.videoroom",
         success: pluginHandle => {
@@ -76,13 +72,12 @@ class BaseApp extends Component {
             "request": "join",
             "room": room,
             "ptype": "publisher",
-            "display": username
+            "display": user.username
           };
-          if (room === activeRoom) {
-            that.publishOwnFeed(true);
-          }
+          
           pluginHandle.send({ "message": register });
         },
+        error: error => console.log(error),
         onmessage: (msg, jsep) => {
           const handle = that.state.handles[room];
 
@@ -93,8 +88,11 @@ class BaseApp extends Component {
           const event = msg['videoroom'];
 
           if (event !== undefined && event !== null) {
-            if (event === "joined") {
-              that.setState({ registered: true });
+            if (event === "joined") {              
+              if (room === user.activeRoom) {
+                that.props.onSetRegisteredStatus(true);
+                that.publishOwnFeed(true);
+              }
             } else if (event === "event") {
               if (msg.room === room && msg.publishers !== undefined && msg.publishers !== null) {
                 setTimeout(() => that.updateRoomList(), 200);
@@ -122,14 +120,9 @@ class BaseApp extends Component {
     handle.send({ "message": { "request": "unpublish" }})  
   }
 
-  publishNew = () => {
-    this.setState({ activeRoom: 2345 });
-    this.publishOwnFeed(true);
-  }
-
   publishOwnFeed = useAudio => {
-    const { activeRoom } = this.state;
-    const handle = this.state.handles[activeRoom];
+    const { user } = this.props;
+    const handle = this.state.handles[user.activeRoom];
     const that = this;
 
     handle.createOffer({
@@ -174,35 +167,30 @@ class BaseApp extends Component {
   }
 
   render() {
-    const { 
-			roomList, 
-      username,
-      registered,
-    } = this.state;
-    const { janus } = this.props;
+    const { roomList } = this.state;
+    const { janus, user } = this.props;
 
-    if (janus !== null) {
-      return (
-        <div>
-          {registered ? (
-            <div>
-              <Header />
-              <RoomList roomList={roomList} onRoomClick={this.updateActiveRoom}/>
-            </div>
-          ) : (
-            <Register onChange={this.handleChange} onSubmit={this.registerHandles} value={username} />
-          )}
-        </div>
-      );
-    } else {
-      return <Loading />
-    }
-   
+    return (
+      <div>
+        {janus ? (
+          <div>
+            {user.registered ? (
+              <div>
+                <Header />
+                <RoomList roomList={roomList} onRoomClick={this.updateActiveRoom}/>
+              </div>
+            ) : (
+              <Register onChange={this.handleChange} onSubmit={this.registerHandles} value={user.username} />
+            )}
+          </div>
+        ) : <Loading />}
+      </div>
+    )
   }
 
   updateActiveRoom = room => {
-    let temp = this.state.activeRoom;
-    this.setState({ activeRoom: room })
+    let temp = this.props.user.activeRoom;
+    this.props.onSetActiveRoom(room);
     this.unpublish(temp);
   }
 } 

@@ -1,5 +1,13 @@
 import { doSetJanus } from './janusActions';
+import { 
+    doSetUsername, 
+    doSetActiveRoom,
+    doSetRegisteredStatus, 
+} from './userActions';
 
 export {
-    doSetJanus
+    doSetJanus,
+    doSetUsername,
+    doSetActiveRoom,
+    doSetRegisteredStatus,
 }

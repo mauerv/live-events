@@ -2,4 +2,6 @@ export const SET_JANUS = 'SET_JANUS';
 
 export const SET_USERNAME = 'SET_USERNAME';
 export const SET_ACTIVE_ROOM = 'SET_ACTIVE_ROOM';
-export const SET_REGISTER_STATUS = 'SET_REGISTER_STATUS';
+export const SET_REGISTERED_STATUS = 'SET_REGISTERED_STATUS';
+
+export const SET_HANDLE = 'SET_HANDLE'
