@@ -1,6 +1,9 @@
 import { connect } from 'react-redux';
 
-import { getRoomList } from '../../selectors';
+import { 
+    getRoomList,
+    getRoomIds,
+} from '../../selectors';
 import { 
     doSetJanus,
     doSetHandle,
@@ -8,7 +11,7 @@ import {
     doSetActiveRoom,
     doSetRegisteredStatus,
     doSetPublisherList,
-    doSetPublisher,
+    doDeletePublisher,
     doSetRoomList,
 } from '../../actions';
 
@@ -18,7 +21,8 @@ const mapStateToProps = state => ({
     janus: state.janus,
     user: state.user,
     handles: state.handles,
-    roomList: getRoomList(state.publishers),
+    roomIds: getRoomIds(state.rooms),
+    roomList: getRoomList(state),
 });
 
 export default connect(
@@ -30,7 +34,7 @@ export default connect(
         onSetActiveRoom: doSetActiveRoom,
         onSetRegisteredStatus: doSetRegisteredStatus,
         onSetPublisherList: doSetPublisherList,
-        onSetPublisher: doSetPublisher,
+        onDeletePublisher: doDeletePublisher,
         onSetRoomList: doSetRoomList,
     }
 )(BaseApp);

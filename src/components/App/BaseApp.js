@@ -18,15 +18,14 @@ class BaseApp extends Component {
 
 	registerHandles = e => {
     e.preventDefault();
-    const { janus, user } = this.props;
+    const { janus, user, roomIds } = this.props;
     const that = this;
-    const rooms = [1234, 2345, 3456, 4567, 5678];
 
     if (user.username.length === 0) {
       return;
     }
 
-    rooms.forEach(room => {      
+    roomIds.forEach(room => {      
       janus.attach({
         plugin: "janus.plugin.videoroom",
         success: pluginHandle => {
@@ -42,8 +41,6 @@ class BaseApp extends Component {
         },
         error: error => console.log(error),
         onmessage: (msg, jsep) => {
-          console.log(room);
-
           const handle = that.props.handles[room];
           
           if (jsep !== undefined && jsep !== null) {
@@ -55,26 +52,29 @@ class BaseApp extends Component {
           if (event !== undefined && event !== null) {
             if (event === "joined") {           
               if (room === user.activeRoom) {
-                that.props.onSetRoomList(handle);
                 that.props.onSetRegisteredStatus(true);
                 that.publish(true);
               }
               
               let publishers = msg['publishers'];
               if (publishers !== undefined && publishers !== null) {   
-                publishers = publishers.map(p => ({ ...p, room: room }));            
-                that.props.onSetPublisherList(publishers);
+                that.props.onSetPublisherList(publishers, room);
               }   
 
             } else if (event === "event") {
               if (msg.unpublished === "ok") {
-                this.publish(true);
+                that.publish(true);
+              }
+              if (typeof msg.unpublished === "number") {
+                that.props.onDeletePublisher(msg.unpublished);
+              }
+              if (msg.publishers !== undefined) {
+                that.props.onSetPublisherList(msg.publishers, room);
               }
             } 
           }
         },
-        onlocalstream: stream => {
-        }
+        onlocalstream: stream => {}
       })
     });
   }
@@ -113,6 +113,13 @@ class BaseApp extends Component {
     })
   }
 
+  changeActiveRoom = room => {
+    const { user, onSetActiveRoom } = this.props;
+    this.unpublish(user.activeRoom);
+    onSetActiveRoom(room);
+    this.publish(true);
+  }
+
   componentDidMount() {
     const that =  this;
 
@@ -122,7 +129,10 @@ class BaseApp extends Component {
         const janus = new Janus({
           server: process.env.REACT_APP_JANUS_SERVER,
           iceServers: iceServers,
-          success: () => that.props.onSetJanus(janus),
+          success: () => {
+            that.props.onSetJanus(janus);
+            that.props.onSetRoomList(janus);
+          },
         });
       }
     });
@@ -138,7 +148,7 @@ class BaseApp extends Component {
             {user.registered ? (
               <div>
                 <Header />
-                <RoomList roomList={roomList} onRoomClick={() => null}/>
+                <RoomList roomList={roomList} onRoomClick={this.changeActiveRoom}/>
               </div>
             ) : (
               <Register 

@@ -1,7 +1,5 @@
 import { 
-    SET_ROOM_LIST_BEGIN,
     SET_ROOM_LIST_SUCCESS,
-    SET_ROOM_LIST_ERROR, 
 } from '../constants/actionTypes';
 
 const initialState = {};

@@ -1,20 +1,30 @@
-export const getRoomList = publishers => { 
-    let defaultRooms = [ 1234, 2345, 3456, 4567, 5678 ];
-    let roomObj = {};
-    defaultRooms.forEach(room => {
-        roomObj[room] = {
-            room: room,
-            description: "lolo",
-            participants: [],
-        }
-    });
+export const getRoomList = ({ publishers, rooms, user }) => {  
     let roomList = [];
+
+    for (const key in rooms) {
+        rooms[key].participants = [];
+    }
+
+    if (rooms[user.activeRoom] !== undefined) {
+        rooms[user.activeRoom].participants.push({ display: user.username, id: user.username })
+    }
+
     for (const key in publishers) {
         let publisher = publishers[key];
-        roomObj[publisher.room].participants.push(publisher);
+        rooms[publisher.room].participants.push(publisher);
     }
-    for (const key in roomObj) {
-        roomList.push(roomObj[key]);
+
+    for (const key in rooms) {
+        roomList.push(rooms[key]);
     }
+    
     return roomList;
+}
+
+export const getRoomIds = rooms => {
+    let roomIds = [];
+    for (const key in rooms) {
+        roomIds.push(rooms[key].room);
+    }
+    return roomIds;
 }

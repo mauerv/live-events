@@ -3,7 +3,7 @@ import { doSetHandle } from './handlesActions';
 import { doSetRoomList } from './roomsActions';
 import {
     doSetPublisherList,
-    doSetPublisher,
+    doDeletePublisher,
 } from './publishersActions';
 import { 
     doSetUsername, 
@@ -15,7 +15,7 @@ export {
     doSetJanus,
     doSetHandle,
     doSetPublisherList,
-    doSetPublisher,
+    doDeletePublisher,
     doSetUsername,
     doSetActiveRoom,
     doSetRegisteredStatus,
