@@ -24,6 +24,7 @@ export const applySetPublisherList = (state, action) => {
     return newState;
 }
 
-export const applySetPublisher = (state, action) => {
-    return { ...state, [action.payload.id]: action.payload}
-}
+export const applySetPublisher = (state, action) => ({
+    ...state, 
+    [action.payload.id]: action.payload
+});

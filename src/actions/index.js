@@ -1,12 +1,10 @@
 import { doSetJanus } from './janusActions';
-
 import { doSetHandle } from './handlesActions';
-
+import { doSetRoomList } from './roomsActions';
 import {
     doSetPublisherList,
     doSetPublisher,
 } from './publishersActions';
-
 import { 
     doSetUsername, 
     doSetActiveRoom,
@@ -21,4 +19,5 @@ export {
     doSetUsername,
     doSetActiveRoom,
     doSetRegisteredStatus,
+    doSetRoomList,
 }

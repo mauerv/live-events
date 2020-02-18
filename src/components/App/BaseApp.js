@@ -55,6 +55,7 @@ class BaseApp extends Component {
           if (event !== undefined && event !== null) {
             if (event === "joined") {           
               if (room === user.activeRoom) {
+                that.props.onSetRoomList(handle);
                 that.props.onSetRegisteredStatus(true);
                 that.publish(true);
               }

@@ -9,6 +9,7 @@ import {
     doSetRegisteredStatus,
     doSetPublisherList,
     doSetPublisher,
+    doSetRoomList,
 } from '../../actions';
 
 import BaseApp from './BaseApp';
@@ -30,5 +31,6 @@ export default connect(
         onSetRegisteredStatus: doSetRegisteredStatus,
         onSetPublisherList: doSetPublisherList,
         onSetPublisher: doSetPublisher,
+        onSetRoomList: doSetRoomList,
     }
 )(BaseApp);
