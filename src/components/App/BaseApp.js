@@ -12,37 +12,6 @@ class BaseApp extends Component {
   constructor(props) {
     super(props);
     this.localVid = React.createRef();
-
-    this.state = { roomList: [] }
-  }
-
-  updateRoomList = () => {
-    const that = this;
-    const { user, handles } = this.props;
-    const handle = handles[user.activeRoom];
-
-    handle.send({ 
-      "message": { "request": "list" },
-      success: roomList => {
-        roomList = roomList.list;
-        roomList.forEach(room => room.participants = []);
-        roomList.forEach(room => {
-          if (room.num_participants > 0) {
-            handle.send({
-              message: {
-                request: "listparticipants",
-                room: room.room
-              },
-              success: participants => {    
-                room.participants = participants.participants.filter(p => p.publisher === true);                            
-                that.setState({ roomList: roomList });
-              }
-            })
-          }
-        })
-        that.setState({ roomList: roomList });
-      }
-    });
   }
 
 	handleChange = e => this.props.onSetUsername(e.target.value);
@@ -73,8 +42,10 @@ class BaseApp extends Component {
         },
         error: error => console.log(error),
         onmessage: (msg, jsep) => {
-          const handle = that.props.handles[room];
+          console.log(room);
 
+          const handle = that.props.handles[room];
+          
           if (jsep !== undefined && jsep !== null) {
             handle.handleRemoteJsep({ jsep: jsep });
           }
@@ -82,23 +53,21 @@ class BaseApp extends Component {
           const event = msg['videoroom'];
 
           if (event !== undefined && event !== null) {
-            if (event === "joined") {              
+            if (event === "joined") {           
               if (room === user.activeRoom) {
                 that.props.onSetRegisteredStatus(true);
-                that.publishOwnFeed(true);
+                that.publish(true);
               }
+              
+              let publishers = msg['publishers'];
+              if (publishers !== undefined && publishers !== null) {   
+                publishers = publishers.map(p => ({ ...p, room: room }));            
+                that.props.onSetPublisherList(publishers);
+              }   
+
             } else if (event === "event") {
-              if (msg.room === room && msg.publishers !== undefined && msg.publishers !== null) {
-                setTimeout(() => that.updateRoomList(), 200);
-              }
               if (msg.unpublished === "ok") {
-                this.publishOwnFeed(true);
-              }
-              if (msg.room === room && typeof msg.unpublished === "number" ) {
-                setTimeout(() => that.updateRoomList(), 200);
-              }
-              if (msg.configured === "ok") {
-                setTimeout(() => that.updateRoomList(), 200);     
+                this.publish(true);
               }
             } 
           }
@@ -114,7 +83,7 @@ class BaseApp extends Component {
     handle.send({ "message": { "request": "unpublish" }})  
   }
 
-  publishOwnFeed = useAudio => {
+  publish = useAudio => {
     const { user } = this.props;
     const handle = this.props.handles[user.activeRoom];
     const that = this;
@@ -137,7 +106,7 @@ class BaseApp extends Component {
       error: (error) => {
         Janus.error("WebRTC error:", error);
         if (useAudio) {
-            that.publishOwnFeed(false);
+            that.publish(false);
         }
       }
     })
@@ -152,17 +121,14 @@ class BaseApp extends Component {
         const janus = new Janus({
           server: process.env.REACT_APP_JANUS_SERVER,
           iceServers: iceServers,
-          success: () => {
-            that.props.onSetJanus(janus)
-          },
+          success: () => that.props.onSetJanus(janus),
         });
       }
     });
   }
 
   render() {
-    const { roomList } = this.state;
-    const { janus, user } = this.props;
+    const { janus, user, roomList } = this.props;
 
     return (
       <div>
@@ -171,21 +137,19 @@ class BaseApp extends Component {
             {user.registered ? (
               <div>
                 <Header />
-                <RoomList roomList={roomList} onRoomClick={this.updateActiveRoom}/>
+                <RoomList roomList={roomList} onRoomClick={() => null}/>
               </div>
             ) : (
-              <Register onChange={this.handleChange} onSubmit={this.registerHandles} value={user.username} />
+              <Register 
+                onChange={this.handleChange} 
+                onSubmit={this.registerHandles} 
+                value={user.username} 
+              />
             )}
           </div>
         ) : <Loading />}
       </div>
     )
-  }
-
-  updateActiveRoom = room => {
-    let temp = this.props.user.activeRoom;
-    this.props.onSetActiveRoom(room);
-    this.unpublish(temp);
   }
 } 
 
