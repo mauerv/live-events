@@ -5,6 +5,7 @@ import RoomList from '../RoomList/RoomList';
 import Register from '../Register/Register';
 import Loading from '../Loading/Loading';
 import Header from '../Header/Header';
+import StreamGrid from '../StreamGrid/StreamGrid';
 
 import iceServers from '../../constants/iceServers';
 
@@ -149,6 +150,7 @@ class BaseApp extends Component {
               <div>
                 <Header />
                 <RoomList roomList={roomList} onRoomClick={this.changeActiveRoom}/>
+                <StreamGrid localVid={this.localVid} />
               </div>
             ) : (
               <Register 
