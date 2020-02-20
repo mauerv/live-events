@@ -12,7 +12,12 @@ import iceServers from '../../constants/iceServers';
 class BaseApp extends Component {
 	constructor(props) {
     	super(props);
-    	this.localVid = React.createRef();
+		this.localVid = React.createRef();
+		this.vid_1234 = React.createRef();
+		this.vid_2345 = React.createRef();
+		this.vid_3456 = React.createRef();
+		this.vid_4567 = React.createRef();
+		this.vid_5678 = React.createRef();
 	}
 
 	handleChange = e => this.props.onSetUsername(e.target.value);
@@ -85,7 +90,6 @@ class BaseApp extends Component {
 					}
 				},
 				onlocalstream: stream => {
-					console.log("I'm attaching in room:", that.props.user.activeRoom)
 					Janus.attachMediaStream(that.localVid.current, stream);
 				}
 			})
@@ -137,8 +141,7 @@ class BaseApp extends Component {
 					}
 				},
 				onremotestream: stream => {
-					
-					
+					Janus.attachMediaStream(that[`vid_${room}`], stream);
 				}
 			})
 		})
@@ -224,7 +227,10 @@ class BaseApp extends Component {
 					<div>
 						<Header />
 						<RoomList roomList={roomList} onRoomClick={this.changeActiveRoom} />
-						<StreamGrid localVid={this.localVid} />
+						<StreamGrid 
+							localVid={this.localVid} 
+							vid_1234={this.vid_1234}
+						/>
 					</div>
 				) : (
 					<Register 
