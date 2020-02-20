@@ -1,7 +1,10 @@
 import { doSetJanus } from './janusActions';
 import { doSetHandle } from './handlesActions';
-import { doSetSubscriptionHandle } from './subscriptionsActions';
 import { doSetRoomList } from './roomsActions';
+import { 
+    doSetSubscriptionHandle,
+    doRemoveSubscriptionHandle, 
+} from './subscriptionsActions';
 import { 
     doSetRemoteStream,
     doRemoveRemoteStream, 
@@ -21,6 +24,7 @@ export {
     doSetJanus,
     doSetHandle,
     doSetSubscriptionHandle,
+    doRemoveSubscriptionHandle,
     doSetPublisherList,
     doDeletePublisher,
     doSetUsername,

@@ -20,6 +20,7 @@ class BaseApp extends Component {
 			user, 
 			roomIds, 
 			onSetSubscriptionHandle,
+			onRemoveSubscriptionHandle,
 			onSetRegisteredStatus,
 			onSetPublisherList,
 			onDeletePublisher,
@@ -76,6 +77,7 @@ class BaseApp extends Component {
 							if (typeof msg.unpublished === "number") {
 								onDeletePublisher(msg.unpublished);
 								onRemoveRemoteStream(msg.unpublished);
+								onRemoveSubscriptionHandle(msg.unpublished);
 							}
 							if (msg.publishers !== undefined) {
 								onSetPublisherList(msg.publishers, room);
