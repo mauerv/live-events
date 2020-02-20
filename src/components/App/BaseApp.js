@@ -10,160 +10,209 @@ import StreamGrid from '../StreamGrid/StreamGrid';
 import iceServers from '../../constants/iceServers';
 
 class BaseApp extends Component {
-  constructor(props) {
-    super(props);
-    this.localVid = React.createRef();
-  }
+	constructor(props) {
+    	super(props);
+    	this.localVid = React.createRef();
+	}
 
 	handleChange = e => this.props.onSetUsername(e.target.value);
 
 	registerHandles = e => {
-    e.preventDefault();
-    const { janus, user, roomIds } = this.props;
-    const that = this;
+    	e.preventDefault();
 
-    if (user.username.length === 0) {
-      return;
-    }
+		const { 
+			janus, 
+			user, 
+			handles,
+			roomIds, 
+			onSetSubscriptionHandle,
+			onSetRegisteredStatus,
+			onSetPublisherList,
+			onDeletePublisher,
+			onSetHandle,
+		} = this.props;
+		const that = this;
 
-    roomIds.forEach(room => {      
-      janus.attach({
-        plugin: "janus.plugin.videoroom",
-        success: pluginHandle => {
-          that.props.onSetHandle(room, pluginHandle);
-          const register = {
-            "request": "join",
-            "room": room,
-            "ptype": "publisher",
-            "display": user.username
-          };
-          
-          pluginHandle.send({ "message": register });
-        },
-        error: error => console.log(error),
-        onmessage: (msg, jsep) => {
-          const handle = that.props.handles[room];
-          
-          if (jsep !== undefined && jsep !== null) {
-            handle.handleRemoteJsep({ jsep: jsep });
-          }
-          
-          const event = msg['videoroom'];
+		if (user.username.length === 0) {
+		return;
+		}
 
-          if (event !== undefined && event !== null) {
-            if (event === "joined") {           
-              if (room === user.activeRoom) {
-                that.props.onSetRegisteredStatus(true);
-                that.publish(true);
-              }
-              
-              let publishers = msg['publishers'];
-              if (publishers !== undefined && publishers !== null) {   
-                that.props.onSetPublisherList(publishers, room);
-              }   
+		roomIds.forEach(room => {      
+			janus.attach({
+			plugin: "janus.plugin.videoroom",
+			success: pluginHandle => {
+				onSetHandle(room, pluginHandle);
+				that.registerInRoom(room, user.username, pluginHandle);
+			},
+			error: error => console.log(error),
+			onmessage: (msg, jsep) => {
+				const handle = handles[room];
+				
+				if (jsep !== undefined && jsep !== null) {					
+					handle.handleRemoteJsep({ jsep: jsep });
+				}
+				
+				const event = msg['videoroom'];
 
-            } else if (event === "event") {
-              if (msg.unpublished === "ok") {
-                that.publish(true);
-              }
-              if (typeof msg.unpublished === "number") {
-                that.props.onDeletePublisher(msg.unpublished);
-              }
-              if (msg.publishers !== undefined) {
-                that.props.onSetPublisherList(msg.publishers, room);
-              }
-            } 
-          }
-        },
-        onlocalstream: stream => {}
-      })
-    });
-  }
+				if (event === "joined") {     						   
+					if (room === user.activeRoom) {
+						that.publish(true);
+					}
+				}
+			},
+			onlocalstream: stream => {}
+			})
+		});
+	}
 
-  unpublish = room => {
-    const handle = this.props.handles[room];
-    handle.send({ "message": { "request": "unpublish" }})  
-  }
+	registerInRoom = (room, display, handle) => {
+		const register = {
+			"request": "join",
+			"room": room,
+			"ptype": "publisher",
+			"display": display
+		};
+		handle.send({ "message": register });
+	}
 
-  publish = useAudio => {
-    const { user } = this.props;
-    const handle = this.props.handles[user.activeRoom];
-    const that = this;
+	/*
+	registerSubscriptionHandles = (
+		room,
+		publishers, 
+		janus,
+		onSetSubscriptionHandle,
+	) => {
+		const that = this;		
 
-    handle.createOffer({
-      media: {
-        audioRecv: false,
-        videoRecv: false,
-        audioSend: useAudio,
-        videoSend: true,
-      },
-      success: (jsep) => {        
-        const publish = {
-          "request": "publish",
-          "audio": useAudio,
-          "video": true,
-        };
-        handle.send({ "message": publish, "jsep": jsep });
-      },
-      error: (error) => {
-        Janus.error("WebRTC error:", error);
-        if (useAudio) {
-            that.publish(false);
-        }
-      }
-    })
-  }
+		publishers.forEach(publisher => {			
+			janus.attach({
+				plugin: "janus.plugin.videoroom",
+				success: pluginHandle => {					
+					onSetSubscriptionHandle(publisher.id, pluginHandle);
+					that.subscribeToPublisher(
+						room, 
+						publisher.id, 
+						publisher.video_codec, 
+						pluginHandle
+					);
+				},
+				error: error => console.log(error),
+				onmessage: (msg, jsep) => {
+					const handle = that.props.handles[room];					
+					if (jsep !== undefined) {						
+						handle.createAnswer({
+							jsep: jsep,
+							media: { audioSend: false, videoSend: false },
+							success: jsep => {
+								const body = { "request": "start", "room": room };
+								handle.send({ "message": body, "jsep": jsep });
+							}
+						})
+					}
+				},
+				onremotestream: stream => {
+					
+				}
+			})
+		})
+	}	
 
-  changeActiveRoom = room => {
-    const { user, onSetActiveRoom } = this.props;
-    this.unpublish(user.activeRoom);
-    onSetActiveRoom(room);
-    this.publish(true);
-  }
+	subscribeToPublisher = (room, id, videoCodec, handle) => {
+		const subscribe = {
+			"request": "join",
+			"room": room,
+			"ptype": "subscriber",
+			"feed": id,
+		};
+		handle.videoCodec = videoCodec;
+		handle.send({ "message": subscribe });
+	}
+	*/
 
-  componentDidMount() {
-    const that =  this;
+	publish = useAudio => {
+		const { user } = this.props;
+		const handle = this.props.handles[user.activeRoom];
+		const that = this;
 
-    Janus.init({
-      debug: false,
-      callback: () => {
-        const janus = new Janus({
-          server: process.env.REACT_APP_JANUS_SERVER,
-          iceServers: iceServers,
-          success: () => {
-            that.props.onSetJanus(janus);
-            that.props.onSetRoomList(janus);
-          },
-        });
-      }
-    });
-  }
+		handle.createOffer({
+			media: {
+				audioRecv: false,
+				videoRecv: false,
+				audioSend: useAudio,
+				videoSend: true,
+			},
+			success: jsep => {        
+				const publish = {
+					"request": "publish",
+					"audio": useAudio,
+					"video": true,
+				};
+				handle.send({ "message": publish, "jsep": jsep });
+			},
+			error: error => {
+				Janus.error("WebRTC error:", error);
+				if (useAudio) {
+					that.publish(false);
+				}
+			}
+		})
+	}
 
-  render() {
-    const { janus, user, roomList } = this.props;
+	unpublish = room => {
+		const handle = this.props.handles[room];
+		handle.send({ "message": { "request": "unpublish" }})  
+	}
 
-    return (
-      <div>
-        {janus ? (
-          <div>
-            {user.registered ? (
-              <div>
-                <Header />
-                <RoomList roomList={roomList} onRoomClick={this.changeActiveRoom}/>
-                <StreamGrid localVid={this.localVid} />
-              </div>
-            ) : (
-              <Register 
-                onChange={this.handleChange} 
-                onSubmit={this.registerHandles} 
-                value={user.username} 
-              />
-            )}
-          </div>
-        ) : <Loading />}
-      </div>
-    )
-  }
+	changeActiveRoom = room => {
+		const { user, onSetActiveRoom } = this.props;
+		this.unpublish(user.activeRoom);
+		onSetActiveRoom(room);
+		this.publish(true);
+	}
+
+	componentDidMount() {
+		const that =  this;
+
+		Janus.init({
+			debug: false,
+			callback: () => {
+			const janus = new Janus({
+				server: process.env.REACT_APP_JANUS_SERVER,
+				iceServers: iceServers,
+				success: () => {
+					that.props.onSetJanus(janus);
+					that.props.onSetRoomList(janus);
+				},
+			});
+			}
+		});
+	}
+
+	render() {
+		const { janus, user, roomList } = this.props;
+
+		return (
+			<div>
+			{janus ? (
+				<div>
+				{user.registered ? (
+					<div>
+						<Header />
+						<RoomList roomList={roomList} onRoomClick={this.changeActiveRoom} />
+						<StreamGrid localVid={this.localVid} />
+					</div>
+				) : (
+					<Register 
+						onChange={this.handleChange} 
+						onSubmit={this.registerHandles} 
+						value={user.username} 
+					/>
+				)}
+				</div>
+			) : <Loading />}
+			</div>
+		)
+	}
 } 
 
 export default BaseApp;

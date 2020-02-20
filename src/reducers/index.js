@@ -5,6 +5,7 @@ import userReducer from './userReducer';
 import handlesReducer from './handlesReducer';
 import publishersReducer from './publishersReducer';
 import roomsReducer from './roomsReducer';
+import subscriptionsReducer from './subscriptionsReducer';
 
 export default combineReducers({
     janus: janusReducer,
@@ -12,4 +13,5 @@ export default combineReducers({
     handles: handlesReducer,
     publishers: publishersReducer,
     rooms: roomsReducer,
+    subscriptions: subscriptionsReducer,
 });

@@ -7,6 +7,7 @@ import {
 import { 
     doSetJanus,
     doSetHandle,
+    doSetSubscriptionHandle,
     doSetUsername,
     doSetActiveRoom,
     doSetRegisteredStatus,
@@ -30,6 +31,7 @@ export default connect(
     { 
         onSetJanus: doSetJanus,
         onSetHandle: doSetHandle,
+        onSetSubscriptionHandle: doSetSubscriptionHandle,
         onSetUsername: doSetUsername,
         onSetActiveRoom: doSetActiveRoom,
         onSetRegisteredStatus: doSetRegisteredStatus,
