@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { 
     getRoomList,
     getRoomIds,
+    getRemoteStreamList,
 } from '../../selectors';
 import { 
     doSetJanus,
@@ -14,6 +15,9 @@ import {
     doSetPublisherList,
     doDeletePublisher,
     doSetRoomList,
+    doSetStream,
+    doSetRemoteStream,
+    doRemoveRemoteStream,
 } from '../../actions';
 
 import BaseApp from './BaseApp';
@@ -25,6 +29,7 @@ const mapStateToProps = state => ({
     subscriptions: state.subscriptions,
     roomIds: getRoomIds(state.rooms),
     roomList: getRoomList(state),
+    streamList: getRemoteStreamList(state.remoteStreams),
 });
 
 export default connect(
@@ -36,8 +41,11 @@ export default connect(
         onSetUsername: doSetUsername,
         onSetActiveRoom: doSetActiveRoom,
         onSetRegisteredStatus: doSetRegisteredStatus,
+        onSetStream: doSetStream,
         onSetPublisherList: doSetPublisherList,
         onDeletePublisher: doDeletePublisher,
         onSetRoomList: doSetRoomList,
+        onSetRemoteStream: doSetRemoteStream,
+        onRemoveRemoteStream: doRemoveRemoteStream,
     }
 )(BaseApp);

@@ -2,6 +2,7 @@ import {
     SET_USERNAME,
     SET_ACTIVE_ROOM,
     SET_REGISTERED_STATUS,
+    SET_STREAM,
 } from '../constants/actionTypes';
 
 export const doSetUsername = username => ({
@@ -19,4 +20,7 @@ export const doSetRegisteredStatus = status => ({
     payload: status,
 });
 
-
+export const doSetStream = stream => ({
+        type: SET_STREAM,
+        payload: stream,
+});

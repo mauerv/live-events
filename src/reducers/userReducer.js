@@ -2,12 +2,14 @@ import {
     SET_USERNAME,
     SET_ACTIVE_ROOM,
     SET_REGISTERED_STATUS,
+    SET_STREAM,
 } from '../constants/actionTypes';
 
 const initialState = {
     username: "",
     activeRoom: 2345,
     registered: false,
+    stream: null,
 };
 
 export default (state = initialState, action) => {
@@ -18,6 +20,8 @@ export default (state = initialState, action) => {
             return { ...state, activeRoom: action.payload };
         case SET_REGISTERED_STATUS:
             return { ...state, registered: action.payload };
+        case SET_STREAM:
+            return { ...state, stream: action.payload };
         default:
             return state;
     }

@@ -6,6 +6,7 @@ import handlesReducer from './handlesReducer';
 import publishersReducer from './publishersReducer';
 import roomsReducer from './roomsReducer';
 import subscriptionsReducer from './subscriptionsReducer';
+import remoteStreamsReducer from './remoteStreamsReducer';
 
 export default combineReducers({
     janus: janusReducer,
@@ -14,4 +15,5 @@ export default combineReducers({
     publishers: publishersReducer,
     rooms: roomsReducer,
     subscriptions: subscriptionsReducer,
+    remoteStreams: remoteStreamsReducer,
 });

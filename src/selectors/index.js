@@ -1,3 +1,5 @@
+import { objToArr } from '../util/helperFunctions';
+
 export const getRoomList = ({ publishers, rooms, user }) => {  
     let roomList = [];
 
@@ -20,6 +22,8 @@ export const getRoomList = ({ publishers, rooms, user }) => {
     
     return roomList;
 }
+
+export const getRemoteStreamList = streams => objToArr(streams);
 
 export const getRoomIds = rooms => {
     let roomIds = [];
