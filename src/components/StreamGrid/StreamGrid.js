@@ -1,7 +1,9 @@
 import React from 'react';
 
-const StreamGrid = React.forwardRef((props, ref) => (
-    <div></div>
-));
+import VideoStream from '../VideoStream/VideoStream';
+
+const StreamGrid = ({ localVid }) => (
+    <VideoStream ref={localVid} />
+);
 
 export default StreamGrid;

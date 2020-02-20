@@ -22,6 +22,7 @@ const mapStateToProps = state => ({
     janus: state.janus,
     user: state.user,
     handles: state.handles,
+    subscriptions: state.subscriptions,
     roomIds: getRoomIds(state.rooms),
     roomList: getRoomList(state),
 });

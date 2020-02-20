@@ -23,7 +23,6 @@ class BaseApp extends Component {
 		const { 
 			janus, 
 			user, 
-			handles,
 			roomIds, 
 			onSetSubscriptionHandle,
 			onSetRegisteredStatus,
@@ -39,28 +38,56 @@ class BaseApp extends Component {
 
 		roomIds.forEach(room => {      
 			janus.attach({
-			plugin: "janus.plugin.videoroom",
-			success: pluginHandle => {
-				onSetHandle(room, pluginHandle);
-				that.registerInRoom(room, user.username, pluginHandle);
-			},
-			error: error => console.log(error),
-			onmessage: (msg, jsep) => {
-				const handle = handles[room];
-				
-				if (jsep !== undefined && jsep !== null) {					
-					handle.handleRemoteJsep({ jsep: jsep });
-				}
-				
-				const event = msg['videoroom'];
-
-				if (event === "joined") {     						   
-					if (room === user.activeRoom) {
-						that.publish(true);
+				plugin: "janus.plugin.videoroom",
+				success: pluginHandle => {
+					onSetHandle(room, pluginHandle);
+					that.registerInRoom(room, user.username, pluginHandle);
+				},
+				error: error => console.log(error),
+				onmessage: (msg, jsep) => {
+					const handle = that.props.handles[room];
+					
+					if (jsep !== undefined && jsep !== null) {
+						handle.handleRemoteJsep({ jsep: jsep });
 					}
+					
+					const event = msg['videoroom'];
+
+					if (event !== undefined) {
+						if (event === "joined") {     						   
+							if (room === user.activeRoom) {
+								onSetRegisteredStatus(true);
+								that.publish(true);
+							}
+							let publishers = msg['publishers'];
+							if (publishers !== undefined) {   							
+								onSetPublisherList(publishers, room);
+								if (room === user.activeRoom) {	
+									that.registerSubscriptionHandles(
+										room, 
+										publishers, 
+										janus, 
+										onSetSubscriptionHandle
+									);
+								}
+							}   
+						} else if (event === "event") {
+							if (msg.unpublished === "ok") {								
+								that.publish(true);
+							}
+							if (typeof msg.unpublished === "number") {
+								onDeletePublisher(msg.unpublished);
+							}
+							if (msg.publishers !== undefined) {
+								onSetPublisherList(msg.publishers, room);
+							}
+						} 
+					}
+				},
+				onlocalstream: stream => {
+					console.log("I'm attaching in room:", that.props.user.activeRoom)
+					Janus.attachMediaStream(that.localVid.current, stream);
 				}
-			},
-			onlocalstream: stream => {}
 			})
 		});
 	}
@@ -75,7 +102,6 @@ class BaseApp extends Component {
 		handle.send({ "message": register });
 	}
 
-	/*
 	registerSubscriptionHandles = (
 		room,
 		publishers, 
@@ -87,7 +113,7 @@ class BaseApp extends Component {
 		publishers.forEach(publisher => {			
 			janus.attach({
 				plugin: "janus.plugin.videoroom",
-				success: pluginHandle => {					
+				success: pluginHandle => {		
 					onSetSubscriptionHandle(publisher.id, pluginHandle);
 					that.subscribeToPublisher(
 						room, 
@@ -98,19 +124,20 @@ class BaseApp extends Component {
 				},
 				error: error => console.log(error),
 				onmessage: (msg, jsep) => {
-					const handle = that.props.handles[room];					
+					const subscription = that.props.subscriptions[publisher.id];
 					if (jsep !== undefined) {						
-						handle.createAnswer({
+						subscription.createAnswer({
 							jsep: jsep,
 							media: { audioSend: false, videoSend: false },
 							success: jsep => {
 								const body = { "request": "start", "room": room };
-								handle.send({ "message": body, "jsep": jsep });
+								subscription.send({ "message": body, "jsep": jsep });
 							}
 						})
 					}
 				},
 				onremotestream: stream => {
+					
 					
 				}
 			})
@@ -127,7 +154,6 @@ class BaseApp extends Component {
 		handle.videoCodec = videoCodec;
 		handle.send({ "message": subscribe });
 	}
-	*/
 
 	publish = useAudio => {
 		const { user } = this.props;
@@ -167,7 +193,6 @@ class BaseApp extends Component {
 		const { user, onSetActiveRoom } = this.props;
 		this.unpublish(user.activeRoom);
 		onSetActiveRoom(room);
-		this.publish(true);
 	}
 
 	componentDidMount() {
