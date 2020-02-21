@@ -9,8 +9,60 @@ import StreamGrid from '../StreamGrid/StreamGrid';
 import { Body } from './styles';
 
 import iceServers from '../../constants/iceServers';
+import { 
+	onJanusError,
+	onJanusDestroy, 
+	registerInRoom,
+	subscribeToPublisher,
+} from '../../services/janus';
 
 class BaseApp extends Component {
+	componentDidMount() {
+		const { onSetJanus, onSetRoomList } = this.props;
+
+		Janus.init({
+			debug: false,
+			callback: () => {
+			if(!Janus.isWebrtcSupported()){ return alert("Your browser doesn't support WebRTC."); }
+
+			const janus = new Janus({
+				server: process.env.REACT_APP_JANUS_SERVER,
+				iceServers: iceServers,
+				success: () => {
+					onSetJanus(janus);
+					onSetRoomList(janus);
+				},
+				error: onJanusError,
+				destroyed: onJanusDestroy,
+			});
+			}
+		});
+	}
+
+	render() {
+		const { janus, user, roomList, streamList } = this.props;
+		return (
+			<div>
+				{janus ? (
+					<div>
+					{user.registered ? (
+						<Body>
+							<RoomList roomList={roomList} onRoomClick={this.changeActiveRoom} />
+							<StreamGrid userStream={user.stream} remoteStreams={streamList} />
+						</Body>
+					) : (
+						<Register 
+							onChange={this.handleChange} 
+							onSubmit={this.registerHandles} 
+							value={user.username} 
+						/>
+					)}
+					</div>
+				) : <Loading />}
+			</div>
+		)
+	}
+
 	handleChange = e => this.props.onSetUsername(e.target.value);
 
 	registerHandles = e => {
@@ -39,7 +91,7 @@ class BaseApp extends Component {
 				plugin: "janus.plugin.videoroom",
 				success: pluginHandle => {
 					onSetHandle(room, pluginHandle);
-					that.registerInRoom(room, user.username, pluginHandle);
+					registerInRoom(room, user.username, pluginHandle);
 				},
 				error: error => console.log(error),
 				onmessage: (msg, jsep) => {
@@ -101,15 +153,7 @@ class BaseApp extends Component {
 		});
 	}
 
-	registerInRoom = (room, display, handle) => {
-		const register = {
-			"request": "join",
-			"room": room,
-			"ptype": "publisher",
-			"display": display
-		};
-		handle.send({ "message": register });
-	}
+
 
 	registerSubscriptionHandles = (
 		room,
@@ -125,7 +169,7 @@ class BaseApp extends Component {
 				plugin: "janus.plugin.videoroom",
 				success: pluginHandle => {		
 					onSetSubscriptionHandle(publisher.id, pluginHandle);
-					that.subscribeToPublisher(
+					subscribeToPublisher(
 						room, 
 						publisher.id, 
 						publisher.video_codec, 
@@ -150,17 +194,6 @@ class BaseApp extends Component {
 			})
 		})
 	}	
-
-	subscribeToPublisher = (room, id, videoCodec, handle) => {
-		const subscribe = {
-			"request": "join",
-			"room": room,
-			"ptype": "subscriber",
-			"feed": id,
-		};
-		handle.videoCodec = videoCodec;
-		handle.send({ "message": subscribe });
-	}
 
 	publish = useAudio => {
 		const { user } = this.props;
@@ -228,50 +261,6 @@ class BaseApp extends Component {
 			onSetRemoteStream,
 		)
 		onSetActiveRoom(room);
-	}
-
-	componentDidMount() {
-		const that =  this;
-
-		Janus.init({
-			debug: false,
-			callback: () => {
-			if(!Janus.isWebrtcSupported()){ return alert("Your browser doesn't support WebRTC."); }
-
-			const janus = new Janus({
-				server: process.env.REACT_APP_JANUS_SERVER,
-				iceServers: iceServers,
-				success: () => {
-					that.props.onSetJanus(janus);
-					that.props.onSetRoomList(janus);
-				},
-			});
-			}
-		});
-	}
-
-	render() {
-		const { janus, user, roomList, streamList } = this.props;
-		return (
-			<div>
-			{janus ? (
-				<div>
-				{user.registered ? (
-					<Body>
-						<RoomList roomList={roomList} onRoomClick={this.changeActiveRoom} />
-						<StreamGrid userStream={user.stream} remoteStreams={streamList} />
-					</Body>
-				) : (
-					<Register 
-						onChange={this.handleChange} 
-						onSubmit={this.registerHandles} 
-						value={user.username} 
-					/>
-				)}
-				</div>
-			) : <Loading />}
-			</div>
-		)
 	}
 } 
 
