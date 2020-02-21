@@ -30,3 +30,5 @@ export const subscribeToPublisher = (room, id, videoCodec, handle) => {
     handle.videoCodec = videoCodec;
     handle.send({ "message": subscribe });
 }
+
+export const unpublish = handle => handle.send({ "message": { "request": "unpublish" }});

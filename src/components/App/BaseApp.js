@@ -14,6 +14,7 @@ import {
 	onJanusDestroy, 
 	registerInRoom,
 	subscribeToPublisher,
+	unpublish,
 } from '../../services/janus';
 
 class BaseApp extends Component {
@@ -224,11 +225,6 @@ class BaseApp extends Component {
 		})
 	}
 
-	unpublish = room => {
-		const handle = this.props.handles[room];
-		handle.send({ "message": { "request": "unpublish" }})  
-	}
-
 	changeActiveRoom = room => {
 		const { 
 			user, 
@@ -240,9 +236,10 @@ class BaseApp extends Component {
 			onRemoveSubscriptionHandle,
 			publishers,
 			janus,
+			handles,
 		} = this.props;
 
-		this.unpublish(user.activeRoom);
+		unpublish(handles[user.activeRoom]);
 		for (const key in subscriptions) {
 			onRemoveRemoteStream(key);
 			onRemoveSubscriptionHandle(key);
