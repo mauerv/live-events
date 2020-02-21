@@ -236,6 +236,8 @@ class BaseApp extends Component {
 		Janus.init({
 			debug: false,
 			callback: () => {
+			if(!Janus.isWebrtcSupported()){ return alert("Your browser doesn't support WebRTC."); }
+
 			const janus = new Janus({
 				server: process.env.REACT_APP_JANUS_SERVER,
 				iceServers: iceServers,
