@@ -15,6 +15,7 @@ import {
 	registerInRoom,
 	subscribeToPublisher,
 	unpublish,
+	publish,
 } from '../../services/janus';
 
 class BaseApp extends Component {
@@ -101,14 +102,13 @@ class BaseApp extends Component {
 					if (jsep !== undefined && jsep !== null) {
 						handle.handleRemoteJsep({ jsep: jsep });
 					}
-					console.log("There was a message", msg);
 					const event = msg['videoroom'];
 
 					if (event !== undefined) {
 						if (event === "joined") {     						   
 							if (room === user.activeRoom) {
 								onSetRegisteredStatus(true);
-								that.publish(true);
+								publish(handle, true);
 							}
 							let publishers = msg['publishers'];
 							if (publishers !== undefined) {   							
@@ -125,8 +125,8 @@ class BaseApp extends Component {
 								}
 							}   
 						} else if (event === "event") {
-							if (msg.unpublished === "ok") {					
-								that.publish(true);
+							if (msg.unpublished === "ok") {		
+								publish(that.props.handles[that.props.user.activeRoom], true);
 							}
 							if (typeof msg.unpublished === "number") {
 								onRemovePublisher(msg.unpublished);
@@ -153,8 +153,6 @@ class BaseApp extends Component {
 			})
 		});
 	}
-
-
 
 	registerSubscriptionHandles = (
 		room,
@@ -196,35 +194,6 @@ class BaseApp extends Component {
 		})
 	}	
 
-	publish = useAudio => {
-		const { user } = this.props;
-		const handle = this.props.handles[user.activeRoom];
-		const that = this;
-
-		handle.createOffer({
-			media: {
-				audioRecv: false,
-				videoRecv: false,
-				audioSend: useAudio,
-				videoSend: true,
-			},
-			success: jsep => {        
-				const publish = {
-					"request": "publish",
-					"audio": useAudio,
-					"video": true,
-				};
-				handle.send({ "message": publish, "jsep": jsep });
-			},
-			error: error => {
-				Janus.error("WebRTC error:", error);
-				if (useAudio) {
-					that.publish(false);
-				}
-			}
-		})
-	}
-
 	changeActiveRoom = room => {
 		const { 
 			user, 
@@ -237,27 +206,24 @@ class BaseApp extends Component {
 			publishers,
 			janus,
 			handles,
-		} = this.props;
+		} = this.props;		
+		onSetActiveRoom(room);
 
 		unpublish(handles[user.activeRoom]);
 		for (const key in subscriptions) {
 			onRemoveRemoteStream(key);
 			onRemoveSubscriptionHandle(key);
 		}
-		let activeRoomPublishers = [];
-		for (const key in publishers) {
-			if (publishers[key].room === room) {
-				activeRoomPublishers.push(publishers[key]);
-			}
-		}
+
+		let activeRoomPublishers = Object.values(publishers).filter(p => p.room === room);
+		
 		this.registerSubscriptionHandles(
 			room,
 			activeRoomPublishers, 
 			janus,
 			onSetSubscriptionHandle,
 			onSetRemoteStream,
-		)
-		onSetActiveRoom(room);
+		);
 	}
 } 
 

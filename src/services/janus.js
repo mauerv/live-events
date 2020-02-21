@@ -31,4 +31,28 @@ export const subscribeToPublisher = (room, id, videoCodec, handle) => {
     handle.send({ "message": subscribe });
 }
 
+export const publish = (handle, useAudio) => {
+    handle.createOffer({
+        media: { 
+            audioRecv: false, audioSend: useAudio,
+            videoRecv: false, videoSend: true,
+        },
+        success: jsep => {        
+            const publish = {
+                "request": "publish",
+                "audio": useAudio,
+                "video": true,
+            };
+            handle.send({ "message": publish, "jsep": jsep });
+        },
+        error: error => {
+            Janus.error("WebRTC publish error:", error);
+            if (useAudio) {
+                publish(false);
+            }
+        }
+    })
+}
+
 export const unpublish = handle => handle.send({ "message": { "request": "unpublish" }});
+
