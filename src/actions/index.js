@@ -11,7 +11,7 @@ import {
 } from './remoteStreamsActions';
 import {
     doSetPublisherList,
-    doDeletePublisher,
+    doRemovePublisher,
 } from './publishersActions';
 import { 
     doSetUsername, 
@@ -26,7 +26,7 @@ export {
     doSetSubscriptionHandle,
     doRemoveSubscriptionHandle,
     doSetPublisherList,
-    doDeletePublisher,
+    doRemovePublisher,
     doSetUsername,
     doSetActiveRoom,
     doSetRegisteredStatus,

@@ -1,6 +1,6 @@
 import { 
     SET_PUBLISHER_LIST,
-    DELETE_PUBLISHER,
+    REMOVE_PUBLISHER,
  } from '../constants/actionTypes';
 
 const initialState = {};
@@ -9,8 +9,8 @@ export default (state = initialState, action) => {
     switch(action.type) {
         case SET_PUBLISHER_LIST:
             return applySetPublisherList(state, action);
-        case DELETE_PUBLISHER:
-            return applyDeletePublisher(state, action);
+        case REMOVE_PUBLISHER:
+            return applyRemovePublisher(state, action);
         default:
             return state;
     }
@@ -24,7 +24,7 @@ export const applySetPublisherList = (state, action) => {
     return newState;
 }
 
-export const applyDeletePublisher = (state, action) => {
+export const applyRemovePublisher = (state, action) => {
     let newState = { ...state };
     delete newState[action.payload];
     return newState;

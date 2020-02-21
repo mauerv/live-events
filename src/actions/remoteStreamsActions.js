@@ -11,4 +11,4 @@ export const doSetRemoteStream = (stream, id) => ({
 export const doRemoveRemoteStream = id => ({
     type: REMOVE_REMOTE_STREAM,
     payload: id,
-})
+});

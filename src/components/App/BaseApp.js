@@ -24,7 +24,7 @@ class BaseApp extends Component {
 			onRemoveSubscriptionHandle,
 			onSetRegisteredStatus,
 			onSetPublisherList,
-			onDeletePublisher,
+			onRemovePublisher,
 			onSetHandle,
 			onSetStream,
 			onSetRemoteStream,
@@ -76,7 +76,7 @@ class BaseApp extends Component {
 								that.publish(true);
 							}
 							if (typeof msg.unpublished === "number") {
-								onDeletePublisher(msg.unpublished);
+								onRemovePublisher(msg.unpublished);
 								onRemoveRemoteStream(msg.unpublished);
 								onRemoveSubscriptionHandle(msg.unpublished);
 							}

@@ -1,17 +1,17 @@
 import { 
     SET_PUBLISHER_LIST,
-    DELETE_PUBLISHER,
+    REMOVE_PUBLISHER,
  } from '../constants/actionTypes';
 
 export const doSetPublisherList = (publishers, room) => {
-    publishers = publishers.map(p => ({ ...p, room: room }));       
+    const publishersWithRoom = publishers.map(p => ({ ...p, room: room }));       
     return {
         type: SET_PUBLISHER_LIST,
-        payload: publishers,
+        payload: publishersWithRoom,
     }
 };
 
-export const doDeletePublisher = id => ({
-    type: DELETE_PUBLISHER,
+export const doRemovePublisher = id => ({
+    type: REMOVE_PUBLISHER,
     payload: id,
 });
