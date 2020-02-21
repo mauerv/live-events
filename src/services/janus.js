@@ -1,14 +1,31 @@
 import { Janus } from 'janus-gateway';
 
+import iceServers from '../constants/iceServers';
+
+export const janusInit = callback => {
+    Janus.init({
+        debug: false,
+        callback: () => {
+        if(!Janus.isWebrtcSupported()){ return alert("Your browser doesn't support WebRTC."); }
+    
+        const janus = new Janus({
+            server: process.env.REACT_APP_JANUS_SERVER,
+            iceServers: iceServers,
+            success: () => callback(janus),
+            error: onJanusError,
+            destroyed: onJanusDestroy,
+        });
+        }
+    });
+}
+
 export const onJanusError = error => {
     Janus.error("Couldn't initialize janus...", error);
     alert("Couldn't initialize janus... " + error);
     window.location.reload();
 } 
 
-export const onJanusDestroy = () => {
-    window.location.reload();
-}
+export const onJanusDestroy = () => window.location.reload();
 
 export const registerInRoom = (room, display, handle) => {
     const register = {
@@ -55,4 +72,3 @@ export const publish = (handle, useAudio) => {
 }
 
 export const unpublish = handle => handle.send({ "message": { "request": "unpublish" }});
-

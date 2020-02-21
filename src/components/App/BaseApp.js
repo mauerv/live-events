@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Janus } from 'janus-gateway';
 
 import RoomList from '../RoomList/RoomList';
 import Register from '../Register/Register';
@@ -8,36 +7,19 @@ import StreamGrid from '../StreamGrid/StreamGrid';
 
 import { Body } from './styles';
 
-import iceServers from '../../constants/iceServers';
 import { 
-	onJanusError,
-	onJanusDestroy, 
 	registerInRoom,
 	subscribeToPublisher,
 	unpublish,
 	publish,
+	janusInit,
 } from '../../services/janus';
 
 class BaseApp extends Component {
 	componentDidMount() {
-		const { onSetJanus, onSetRoomList } = this.props;
-
-		Janus.init({
-			debug: false,
-			callback: () => {
-			if(!Janus.isWebrtcSupported()){ return alert("Your browser doesn't support WebRTC."); }
-
-			const janus = new Janus({
-				server: process.env.REACT_APP_JANUS_SERVER,
-				iceServers: iceServers,
-				success: () => {
-					onSetJanus(janus);
-					onSetRoomList(janus);
-				},
-				error: onJanusError,
-				destroyed: onJanusDestroy,
-			});
-			}
+		janusInit(janus => {
+			this.props.onSetJanus(janus);
+			this.props.onSetRoomList(janus);
 		});
 	}
 
