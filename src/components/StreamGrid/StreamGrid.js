@@ -14,7 +14,6 @@ class StreamGrid extends Component {
         this.remoteStream_2 = React.createRef();
         this.remoteStream_3 = React.createRef();
         this.remoteStream_4 = React.createRef();
-
     }
 
     componentDidUpdate(prevProps, prevState) {
