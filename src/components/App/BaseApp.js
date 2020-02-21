@@ -37,7 +37,7 @@ class BaseApp extends Component {
 					) : (
 						<Register 
 							onChange={this.handleChange} 
-							onSubmit={this.registerHandles} 
+							onSubmit={this.manageRooms} 
 							value={user.username} 
 						/>
 					)}
@@ -49,21 +49,19 @@ class BaseApp extends Component {
 
 	handleChange = e => this.props.onSetUsername(e.target.value);
 
-	registerHandles = e => {
+	manageRooms = e => {
     	e.preventDefault();
 
 		const { 
 			janus, 
 			user, 
 			roomIds, 
-			onSetSubscriptionHandle,
 			onRemoveSubscriptionHandle,
 			onSetRegisteredStatus,
 			onSetPublisherList,
 			onRemovePublisher,
 			onSetHandle,
 			onSetStream,
-			onSetRemoteStream,
 			onRemoveRemoteStream,
 		} = this.props;
 		const that = this;
@@ -96,14 +94,7 @@ class BaseApp extends Component {
 							if (publishers !== undefined) {   							
 								onSetPublisherList(publishers, room);
 								if (room === user.activeRoom) {	
-									that.registerSubscriptionHandles(
-										room, 
-										publishers, 
-										janus, 
-										onSetSubscriptionHandle,
-										onSetRemoteStream,
-										onRemoveRemoteStream,
-									);
+									that.newRemoteFeeds(room, publishers);
 								}
 							}   
 						} else if (event === "event") {
@@ -118,14 +109,7 @@ class BaseApp extends Component {
 							if (msg.publishers !== undefined) {
 								onSetPublisherList(msg.publishers, room);
 								if (room === user.activeRoom) {
-									this.registerSubscriptionHandles(
-										room,
-										msg.publishers,
-										janus,
-										onSetSubscriptionHandle,
-										onSetRemoteStream,
-										onRemoveRemoteStream,
-									)
+									this.newRemoteFeeds(room, msg.publishers);
 								}
 							}
 						} 
@@ -136,13 +120,8 @@ class BaseApp extends Component {
 		});
 	}
 
-	registerSubscriptionHandles = (
-		room,
-		publishers, 
-		janus,
-		onSetSubscriptionHandle,
-		onSetRemoteStream,
-	) => {
+	newRemoteFeeds = (room, publishers) => {
+		const { janus, onSetSubscriptionHandle, onSetRemoteStream} = this.props;
 		const that = this;		
 
 		publishers.forEach(publisher => {			
@@ -172,40 +151,33 @@ class BaseApp extends Component {
 					}
 				},
 				onremotestream: stream => onSetRemoteStream(stream, publisher.id),
+				oncleanup: () => {}
 			})
 		})
 	}	
 
-	changeActiveRoom = room => {
+	changeActiveRoom = newRoom => {
 		const { 
 			user, 
 			onSetActiveRoom, 
 			subscriptions, 
-			onSetSubscriptionHandle,
-			onSetRemoteStream,
 			onRemoveRemoteStream,
 			onRemoveSubscriptionHandle,
 			publishers,
-			janus,
 			handles,
-		} = this.props;		
-		onSetActiveRoom(room);
-
+		} = this.props;
+		if (newRoom === user.activeRoom) return;
+		
 		unpublish(handles[user.activeRoom]);
 		for (const key in subscriptions) {
 			onRemoveRemoteStream(key);
 			onRemoveSubscriptionHandle(key);
 		}
-
-		let activeRoomPublishers = Object.values(publishers).filter(p => p.room === room);
 		
-		this.registerSubscriptionHandles(
-			room,
-			activeRoomPublishers, 
-			janus,
-			onSetSubscriptionHandle,
-			onSetRemoteStream,
-		);
+		let activeRoomPublishers = Object.values(publishers).filter(p => p.room === newRoom);
+		
+		this.newRemoteFeeds(newRoom, activeRoomPublishers);
+		onSetActiveRoom(newRoom);
 	}
 } 
 
