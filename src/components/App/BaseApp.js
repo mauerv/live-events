@@ -24,10 +24,16 @@ class BaseApp extends Component {
 	}
 
 	render() {
-		const { janus, user, roomList, streamList } = this.props;
+		const { 
+			janus, 
+			user,
+			isRoomListSet, 
+			roomList, 
+			streamList,
+		} = this.props;
 		return (
 			<div>
-				{janus ? (
+				{janus && isRoomListSet ? (
 					<div>
 					{user.registered ? (
 						<Body>
@@ -115,7 +121,11 @@ class BaseApp extends Component {
 						} 
 					}
 				},
-				onlocalstream: stream => onSetStream(stream)
+				onlocalstream: stream => {
+					console.log("Steraming in room:", that.props.user.activeRoom);
+					
+					onSetStream(stream);
+				} 
 			})
 		});
 	}

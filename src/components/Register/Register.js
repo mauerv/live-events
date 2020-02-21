@@ -7,7 +7,11 @@ import {
     RegisterTitle, 
 } from './styles';
 
-const Register = ({ onChange, onSubmit, value }) => (
+const Register = ({ 
+    onChange, 
+    onSubmit, 
+    value
+}) => (
     <RegisterContainer>
         <RegisterTitle>Welcome to Eventis</RegisterTitle>
         <SimpleForm 

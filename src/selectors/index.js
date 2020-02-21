@@ -1,23 +1,23 @@
 import { objToArr } from '../util/helperFunctions';
 
-export const getRoomList = ({ publishers, rooms, user }) => {  
+export const getRoomList = ({ publishers, roomData, user }) => {  
     let roomList = [];
 
-    for (const key in rooms) {
-        rooms[key].participants = [];
+    for (const key in roomData.rooms) {
+        roomData.rooms[key].participants = [];
     }
 
-    if (rooms[user.activeRoom] !== undefined) {
-        rooms[user.activeRoom].participants.push({ display: user.username, id: user.username })
+    if (roomData.rooms[user.activeRoom] !== undefined) {
+        roomData.rooms[user.activeRoom].participants.push({ display: user.username, id: user.username })
     }
 
     for (const key in publishers) {
         let publisher = publishers[key];
-        rooms[publisher.room].participants.push(publisher);
+        roomData.rooms[publisher.room].participants.push(publisher);
     }
 
-    for (const key in rooms) {
-        roomList.push(rooms[key]);
+    for (const key in roomData.rooms) {
+        roomList.push(roomData.rooms[key]);
     }
     
     return roomList;
@@ -25,10 +25,10 @@ export const getRoomList = ({ publishers, rooms, user }) => {
 
 export const getRemoteStreamList = streams => objToArr(streams);
 
-export const getRoomIds = rooms => {
+export const getRoomIds = roomData => {
     let roomIds = [];
-    for (const key in rooms) {
-        roomIds.push(rooms[key].room);
+    for (const key in roomData.rooms) {
+        roomIds.push(roomData.rooms[key].room);
     }
     return roomIds;
 }

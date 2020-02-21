@@ -22,7 +22,7 @@ class StreamGrid extends Component {
             Janus.attachMediaStream(this.userVid.current, userStream);
         }
         if (remoteStreams.length !== 0) {
-            remoteStreams.map((stream, i) => {
+            remoteStreams.forEach((stream, i) => {
                 Janus.attachMediaStream(this[`remoteStream_${i}`].current, stream);
             });
         }

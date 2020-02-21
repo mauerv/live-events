@@ -27,4 +27,8 @@ export const SimpleFormSubmit = styled.input`
     &:hover {
         cursor: pointer;
     }
+    &:disabled {
+        opacity: 50%;
+        cursor: auto;
+    }
 `

@@ -6,7 +6,11 @@ import {
     SimpleFormSubmit,
 } from './styles';
 
-const SimpleForm = ({ value, onChange, onSubmit }) => (
+const SimpleForm = ({ 
+    value, 
+    onChange, 
+    onSubmit, 
+}) => (
     <SimpleFormContainer onSubmit={onSubmit}>
         <SimpleFormInput
             type="text"

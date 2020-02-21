@@ -13,7 +13,7 @@ export default combineReducers({
     user: userReducer,
     handles: handlesReducer,
     publishers: publishersReducer,
-    rooms: roomsReducer,
+    roomData: roomsReducer,
     subscriptions: subscriptionsReducer,
     remoteStreams: remoteStreamsReducer,
 });

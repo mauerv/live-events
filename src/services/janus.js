@@ -21,8 +21,7 @@ export const janusInit = callback => {
 
 export const onJanusError = error => {
     Janus.error("Couldn't initialize janus...", error);
-    alert("Couldn't initialize janus... " + error);
-    window.location.reload();
+    console.log("Couldn't initialize janus... " + error);
 } 
 
 export const onJanusDestroy = () => window.location.reload();
