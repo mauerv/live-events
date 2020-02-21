@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import { Janus } from 'janus-gateway';
 
-import VideoStream from '../VideoStream/VideoStream';
+import StreamGridItem from './StreamGridItem';
 
+import { StreamGridContainer } from './styles';
 
 class StreamGrid extends Component { 
     constructor(props) {
@@ -31,14 +32,14 @@ class StreamGrid extends Component {
     render() {   
         const { userStream, remoteStreams } = this.props;     
         return (
-            <div>
-                {userStream ? <VideoStream ref={this.userVid} /> : null}
-                {remoteStreams[0] ? <VideoStream ref={this.remoteStream_0} /> : null}
-                {remoteStreams[1] ? <VideoStream ref={this.remoteStream_1} /> : null}
-                {remoteStreams[2] ? <VideoStream ref={this.remoteStream_2} /> : null}
-                {remoteStreams[3] ? <VideoStream ref={this.remoteStream_3} /> : null}
-                {remoteStreams[4] ? <VideoStream ref={this.remoteStream_4} /> : null}
-            </div>
+            <StreamGridContainer>
+                {userStream ? <StreamGridItem ref={this.userVid} /> : null}
+                {remoteStreams[0] ? <StreamGridItem ref={this.remoteStream_0} /> : null}
+                {remoteStreams[1] ? <StreamGridItem ref={this.remoteStream_1} /> : null}
+                {remoteStreams[2] ? <StreamGridItem ref={this.remoteStream_2} /> : null}
+                {remoteStreams[3] ? <StreamGridItem ref={this.remoteStream_3} /> : null}
+                {remoteStreams[4] ? <StreamGridItem ref={this.remoteStream_4} /> : null}
+            </StreamGridContainer>
         );
     }
 } 

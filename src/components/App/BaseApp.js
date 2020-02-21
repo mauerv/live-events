@@ -4,8 +4,9 @@ import { Janus } from 'janus-gateway';
 import RoomList from '../RoomList/RoomList';
 import Register from '../Register/Register';
 import Loading from '../Loading/Loading';
-import Header from '../Header/Header';
 import StreamGrid from '../StreamGrid/StreamGrid';
+
+import { Body } from './styles';
 
 import iceServers from '../../constants/iceServers';
 
@@ -47,7 +48,7 @@ class BaseApp extends Component {
 					if (jsep !== undefined && jsep !== null) {
 						handle.handleRemoteJsep({ jsep: jsep });
 					}
-					
+					console.log("There was a message", msg);
 					const event = msg['videoroom'];
 
 					if (event !== undefined) {
@@ -71,7 +72,7 @@ class BaseApp extends Component {
 								}
 							}   
 						} else if (event === "event") {
-							if (msg.unpublished === "ok") {								
+							if (msg.unpublished === "ok") {					
 								that.publish(true);
 							}
 							if (typeof msg.unpublished === "number") {
@@ -81,6 +82,16 @@ class BaseApp extends Component {
 							}
 							if (msg.publishers !== undefined) {
 								onSetPublisherList(msg.publishers, room);
+								if (room === user.activeRoom) {
+									this.registerSubscriptionHandles(
+										room,
+										msg.publishers,
+										janus,
+										onSetSubscriptionHandle,
+										onSetRemoteStream,
+										onRemoveRemoteStream,
+									)
+								}
 							}
 						} 
 					}
@@ -106,7 +117,6 @@ class BaseApp extends Component {
 		janus,
 		onSetSubscriptionHandle,
 		onSetRemoteStream,
-		onRemoveRemoteStream,
 	) => {
 		const that = this;		
 
@@ -187,8 +197,36 @@ class BaseApp extends Component {
 	}
 
 	changeActiveRoom = room => {
-		const { user, onSetActiveRoom } = this.props;
+		const { 
+			user, 
+			onSetActiveRoom, 
+			subscriptions, 
+			onSetSubscriptionHandle,
+			onSetRemoteStream,
+			onRemoveRemoteStream,
+			onRemoveSubscriptionHandle,
+			publishers,
+			janus,
+		} = this.props;
+
 		this.unpublish(user.activeRoom);
+		for (const key in subscriptions) {
+			onRemoveRemoteStream(key);
+			onRemoveSubscriptionHandle(key);
+		}
+		let activeRoomPublishers = [];
+		for (const key in publishers) {
+			if (publishers[key].room === room) {
+				activeRoomPublishers.push(publishers[key]);
+			}
+		}
+		this.registerSubscriptionHandles(
+			room,
+			activeRoomPublishers, 
+			janus,
+			onSetSubscriptionHandle,
+			onSetRemoteStream,
+		)
 		onSetActiveRoom(room);
 	}
 
@@ -217,11 +255,10 @@ class BaseApp extends Component {
 			{janus ? (
 				<div>
 				{user.registered ? (
-					<div>
-						<Header />
+					<Body>
 						<RoomList roomList={roomList} onRoomClick={this.changeActiveRoom} />
 						<StreamGrid userStream={user.stream} remoteStreams={streamList} />
-					</div>
+					</Body>
 				) : (
 					<Register 
 						onChange={this.handleChange} 

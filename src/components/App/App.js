@@ -31,6 +31,7 @@ const mapStateToProps = state => ({
     roomIds: getRoomIds(state.rooms),
     roomList: getRoomList(state),
     streamList: getRemoteStreamList(state.remoteStreams),
+    publishers: state.publishers,
 });
 
 export default connect(
