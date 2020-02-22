@@ -19,6 +19,7 @@ import {
 class BaseApp extends Component {
 	state = {
 		registering: false,
+		publishing: false,
 	};
 	componentDidMount() {
 		janusInit(janus => {
@@ -106,7 +107,7 @@ class BaseApp extends Component {
 							if (room === user.activeRoom) {
 								onSetRegisteredStatus(true);
 								that.setState({ registering: false });
-								publish(handle, true);
+								that.publishOwnFeed(handle, true);
 							}
 							let publishers = msg['publishers'];
 							if (publishers !== undefined && publishers.length !== 0) {   							
@@ -116,8 +117,11 @@ class BaseApp extends Component {
 								}
 							}   
 						} else if (event === "event") {
+							if (msg.configured === "ok") {
+								that.setState({ publishing: false });
+							}
 							if (msg.unpublished === "ok") {		
-								publish(that.props.handles[user.activeRoom], true);
+								that.publishOwnFeed(that.props.handles[user.activeRoom], true);
 							}
 							if (typeof msg.unpublished === "number") {
 								onRemovePublisher(msg.unpublished);
@@ -125,7 +129,6 @@ class BaseApp extends Component {
 								onRemoveSubscriptionHandle(msg.unpublished);
 							}
 							if (msg.publishers !== undefined) {			
-								console.log("The message has publishers", msg.publishers);			
 								onSetPublisherList(msg.publishers, room);
 								if (room === user.activeRoom) {
 									that.newRemoteFeeds(room, msg.publishers);
@@ -134,15 +137,10 @@ class BaseApp extends Component {
 						} 
 					}
 					if (jsep !== undefined && jsep !== null) {
-						handle.handleRemoteJsep({ jsep: jsep });
-						console.log("Fucking", msg);
-						
+						handle.handleRemoteJsep({ jsep: jsep });						
 					}
 				},
 				onlocalstream: stream => {				
-					console.log("New audio stream", stream.getAudioTracks(), "room", that.props.user.activeRoom)
-					console.log("New video stream", stream.getVideoTracks())	
-	
 					onSetStream(stream);
 				} 
 			})
@@ -150,7 +148,6 @@ class BaseApp extends Component {
 	}
 
 	newRemoteFeeds = (room, publishers) => {
-		console.log("Yo, got new publishers", publishers)
 		const { janus, onSetSubscriptionHandle, onSetRemoteStream} = this.props;
 		const that = this;		
 
@@ -181,13 +178,17 @@ class BaseApp extends Component {
 					}
 				},
 				onremotestream: stream => {
-					console.log("New remote stream");
 					onSetRemoteStream(stream, publisher.id);
 				},
 				oncleanup: () => {}
 			})
 		})
 	}	
+
+	publishOwnFeed = (handle, withAudio) => {
+		this.setState({ publishing: true });
+		publish(handle, withAudio);
+	}
 
 	changeActiveRoom = newRoom => {
 		const { 
@@ -199,7 +200,10 @@ class BaseApp extends Component {
 			publishers,
 			handles,
 		} = this.props;
+		const { publishing } = this.state;
+
 		if (newRoom === user.activeRoom) return;
+		if (publishing === true) return;
 		
 		unpublish(handles[user.activeRoom]);
 		for (const key in subscriptions) {
