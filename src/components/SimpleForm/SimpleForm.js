@@ -17,6 +17,7 @@ const SimpleForm = ({
             type="text"
             value={value}
             onChange={onChange}
+            autoFocus
         />
         <SimpleFormSubmit type="submit" value="Join" disabled={submitDisabled} />
     </SimpleFormContainer>
