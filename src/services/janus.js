@@ -50,10 +50,12 @@ export const subscribeToPublisher = (room, id, videoCodec, handle) => {
 export const publish = (handle, useAudio) => {
     handle.createOffer({
         media: { 
-            audioRecv: false, audioSend: useAudio,
-            videoRecv: false, videoSend: true,
+            audioRecv: false, videoRecv: false, 
+            audioSend: useAudio, videoSend: true,
         },
-        success: jsep => {        
+        success: jsep => {      
+            Janus.debug("Get publisher SDP!");
+            Janus.debug(jsep);  
             const publish = {
                 "request": "publish",
                 "audio": useAudio,
@@ -67,7 +69,7 @@ export const publish = (handle, useAudio) => {
                 publish(false);
             }
         }
-    })
+    });
 }
 
 export const unpublish = handle => handle.send({ "message": { "request": "unpublish" }});

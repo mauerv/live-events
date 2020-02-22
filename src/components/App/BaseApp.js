@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Janus } from 'janus-gateway';
 
 import RoomList from '../RoomList/RoomList';
 import Register from '../Register/Register';
@@ -85,10 +86,6 @@ class BaseApp extends Component {
 				onmessage: (msg, jsep) => {
 					const { user } = that.props;
 					const handle = that.props.handles[room];
-					
-					if (jsep !== undefined && jsep !== null) {
-						handle.handleRemoteJsep({ jsep: jsep });
-					}
 					const event = msg['videoroom'];
 
 					if (event !== undefined) {
@@ -122,8 +119,16 @@ class BaseApp extends Component {
 							}
 						} 
 					}
+					if (jsep !== undefined && jsep !== null) {
+						handle.handleRemoteJsep({ jsep: jsep });
+						console.log("Fucking", msg);
+						
+					}
 				},
-				onlocalstream: stream => {					
+				onlocalstream: stream => {				
+					console.log("New audio stream", stream.getAudioTracks(), "room", that.props.user.activeRoom)
+					console.log("New video stream", stream.getVideoTracks())	
+	
 					onSetStream(stream);
 				} 
 			})
@@ -162,6 +167,7 @@ class BaseApp extends Component {
 					}
 				},
 				onremotestream: stream => {
+					console.log("New remote stream");
 					onSetRemoteStream(stream, publisher.id);
 				},
 				oncleanup: () => {}
