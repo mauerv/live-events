@@ -21,8 +21,12 @@ export default (state = initialState, action) => {
         case SET_REGISTERED_STATUS:
             return { ...state, registered: action.payload };
         case SET_STREAM:
-            return { ...state, stream: action.payload };
+            return applySetStream(state, action);
         default:
             return state;
     }
+}
+
+export const applySetStream = (state, action) => {
+    return { ...state, stream: action.payload };
 }

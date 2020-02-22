@@ -83,6 +83,7 @@ class BaseApp extends Component {
 				},
 				error: error => console.log(error),
 				onmessage: (msg, jsep) => {
+					const { user } = that.props;
 					const handle = that.props.handles[room];
 					
 					if (jsep !== undefined && jsep !== null) {
@@ -97,7 +98,7 @@ class BaseApp extends Component {
 								publish(handle, true);
 							}
 							let publishers = msg['publishers'];
-							if (publishers !== undefined) {   							
+							if (publishers !== undefined && publishers.length !== 0) {   							
 								onSetPublisherList(publishers, room);
 								if (room === user.activeRoom) {	
 									that.newRemoteFeeds(room, publishers);
@@ -105,25 +106,24 @@ class BaseApp extends Component {
 							}   
 						} else if (event === "event") {
 							if (msg.unpublished === "ok") {		
-								publish(that.props.handles[that.props.user.activeRoom], true);
+								publish(that.props.handles[user.activeRoom], true);
 							}
 							if (typeof msg.unpublished === "number") {
 								onRemovePublisher(msg.unpublished);
 								onRemoveRemoteStream(msg.unpublished);
 								onRemoveSubscriptionHandle(msg.unpublished);
 							}
-							if (msg.publishers !== undefined) {
+							if (msg.publishers !== undefined) {			
+								console.log("The message has publishers", msg.publishers);			
 								onSetPublisherList(msg.publishers, room);
 								if (room === user.activeRoom) {
-									this.newRemoteFeeds(room, msg.publishers);
+									that.newRemoteFeeds(room, msg.publishers);
 								}
 							}
 						} 
 					}
 				},
-				onlocalstream: stream => {
-					console.log("Steraming in room:", that.props.user.activeRoom);
-					
+				onlocalstream: stream => {					
 					onSetStream(stream);
 				} 
 			})
@@ -131,6 +131,7 @@ class BaseApp extends Component {
 	}
 
 	newRemoteFeeds = (room, publishers) => {
+		console.log("Yo, got new publishers", publishers)
 		const { janus, onSetSubscriptionHandle, onSetRemoteStream} = this.props;
 		const that = this;		
 
@@ -160,7 +161,9 @@ class BaseApp extends Component {
 						})
 					}
 				},
-				onremotestream: stream => onSetRemoteStream(stream, publisher.id),
+				onremotestream: stream => {
+					onSetRemoteStream(stream, publisher.id);
+				},
 				oncleanup: () => {}
 			})
 		})

@@ -10,7 +10,8 @@ import {
 const Register = ({ 
     onChange, 
     onSubmit, 
-    value
+    value,
+    submitDisabled,
 }) => (
     <RegisterContainer>
         <RegisterTitle>Welcome to Eventis</RegisterTitle>
@@ -18,6 +19,7 @@ const Register = ({
             onChange={onChange} 
             onSubmit={onSubmit} 
             value={value} 
+            submitDisabled={submitDisabled}
         />
     </RegisterContainer>
 )

@@ -8,7 +8,7 @@ const initialState = {};
 export default (state = initialState, action) => {
     switch(action.type) {
         case SET_REMOTE_STREAM:
-            return { ...state, [action.payload.id]: action.payload.stream }
+            return applySetRemoteStream(state, action);
         case REMOVE_REMOTE_STREAM:
             return applyRemoveRemoteStream(state, action);
         default:
@@ -22,3 +22,6 @@ export const applyRemoveRemoteStream = (state, action) => {
     return newState;
 }
 
+export const applySetRemoteStream = (state, action) => {
+    return { ...state, [action.payload.id]: action.payload.stream }
+}

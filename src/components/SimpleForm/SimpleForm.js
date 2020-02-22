@@ -10,6 +10,7 @@ const SimpleForm = ({
     value, 
     onChange, 
     onSubmit, 
+    submitDisabled,
 }) => (
     <SimpleFormContainer onSubmit={onSubmit}>
         <SimpleFormInput
@@ -17,7 +18,7 @@ const SimpleForm = ({
             value={value}
             onChange={onChange}
         />
-        <SimpleFormSubmit type="submit" value="Join" />
+        <SimpleFormSubmit type="submit" value="Join" disabled={submitDisabled} />
     </SimpleFormContainer>
 );
 
