@@ -32,7 +32,7 @@ class StreamGrid extends Component {
         const { userStream, remoteStreams } = this.props;     
         return (
             <StreamGridContainer>
-                {userStream ? <StreamGridItem ref={this.userVid} /> : null}
+                {userStream ? <StreamGridItem ref={this.userVid} isMuted={"muted"}/> : null}
                 {remoteStreams[0] ? <StreamGridItem ref={this.remoteStream_0} /> : null}
                 {remoteStreams[1] ? <StreamGridItem ref={this.remoteStream_1} /> : null}
                 {remoteStreams[2] ? <StreamGridItem ref={this.remoteStream_2} /> : null}

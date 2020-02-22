@@ -12,7 +12,7 @@ const StreamGridItem = React.forwardRef((props, ref) => (
             autoPlay
             playsInline
             controls={false} 
-            muted="muted"   
+            muted={props.isMuted}
         ></StreamVideo>
     </StreamContainer>
 ));
