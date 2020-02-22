@@ -15,3 +15,10 @@ export const RegisterTitle = styled.h1`
     padding: 20px 50px;
     background-color: #b86953;
 `
+
+export const RegisterPrompt = styled.p`
+    color: white;
+    margin: 5px;
+    font-size: 1.1rem;
+`
+

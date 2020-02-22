@@ -17,6 +17,9 @@ import {
 } from '../../services/janus';
 
 class BaseApp extends Component {
+	state = {
+		registering: false,
+	};
 	componentDidMount() {
 		janusInit(janus => {
 			this.props.onSetJanus(janus);
@@ -32,6 +35,8 @@ class BaseApp extends Component {
 			roomList, 
 			streamList,
 		} = this.props;
+		const { registering } = this.state;
+
 		return (
 			<div>
 				{janus && isRoomListSet ? (
@@ -44,8 +49,9 @@ class BaseApp extends Component {
 					) : (
 						<Register 
 							onChange={this.handleChange} 
-							onSubmit={this.manageRooms} 
+							onSubmit={this.handleSubmit} 
 							value={user.username} 
+							registering={registering}
 						/>
 					)}
 					</div>
@@ -56,9 +62,16 @@ class BaseApp extends Component {
 
 	handleChange = e => this.props.onSetUsername(e.target.value);
 
-	manageRooms = e => {
-    	e.preventDefault();
+	handleSubmit = e => {
+		e.preventDefault();
 
+		if (this.state.registering === true) return;
+
+		this.setState({ registering: true });
+		this.manageRooms();
+	}
+
+	manageRooms = () => {
 		const { 
 			janus, 
 			user, 
@@ -92,6 +105,7 @@ class BaseApp extends Component {
 						if (event === "joined") {     						   
 							if (room === user.activeRoom) {
 								onSetRegisteredStatus(true);
+								that.setState({ registering: false });
 								publish(handle, true);
 							}
 							let publishers = msg['publishers'];
