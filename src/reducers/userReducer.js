@@ -3,6 +3,7 @@ import {
     SET_ACTIVE_ROOM,
     SET_REGISTERED_STATUS,
     SET_STREAM,
+    TOGGLE_AUDIO,
 } from '../constants/actionTypes';
 
 const initialState = {
@@ -10,6 +11,7 @@ const initialState = {
     activeRoom: 1234,
     registered: false,
     stream: null,
+    publishAudio: true,
 };
 
 export default (state = initialState, action) => {
@@ -22,6 +24,8 @@ export default (state = initialState, action) => {
             return { ...state, registered: action.payload };
         case SET_STREAM:
             return applySetStream(state, action);
+        case TOGGLE_AUDIO:
+            return { ...state, publishAudio: !state.publishAudio };
         default:
             return state;
     }

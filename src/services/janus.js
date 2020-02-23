@@ -21,7 +21,6 @@ export const janusInit = callback => {
 
 export const onJanusError = error => {
     Janus.error("Couldn't initialize janus...", error);
-    console.log("Couldn't initialize janus... " + error);
 } 
 
 export const onJanusDestroy = () => window.location.reload();
@@ -47,19 +46,19 @@ export const subscribeToPublisher = (room, id, videoCodec, handle) => {
     handle.send({ "message": subscribe });
 }
 
-export const publish = (handle, useAudio) => {
+export const publish = (handle, useAudio, useVideo) => {
     handle.createOffer({
         media: { 
             audioRecv: false, videoRecv: false, 
-            audioSend: useAudio, videoSend: true,
+            audioSend: useAudio, videoSend: useVideo,
         },
         success: jsep => {      
             Janus.debug("Get publisher SDP!");
             Janus.debug(jsep);  
             const publish = {
-                "request": "publish",
+                "request": "configure",
                 "audio": useAudio,
-                "video": true,
+                "video": useVideo,
             };
             handle.send({ "message": publish, "jsep": jsep });
         },

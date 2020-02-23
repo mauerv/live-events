@@ -4,6 +4,7 @@ export const SET_USERNAME = 'SET_USERNAME';
 export const SET_ACTIVE_ROOM = 'SET_ACTIVE_ROOM';
 export const SET_REGISTERED_STATUS = 'SET_REGISTERED_STATUS';
 export const SET_STREAM = 'SET_STREAM';
+export const TOGGLE_AUDIO = 'TOGGLE_AUDIO';
 
 export const SET_HANDLE = 'SET_HANDLE';
 

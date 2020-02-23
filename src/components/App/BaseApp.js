@@ -50,7 +50,12 @@ class BaseApp extends Component {
 								activeRoom={user.activeRoom}
 								publishing={publishing}
 							/>
-							<StreamGrid userStream={user.stream} remoteStreams={streamList} />
+							<StreamGrid 
+								userStream={user.stream} 
+								remoteStreams={streamList} 
+								toggleAudio={this.toggleAudio}
+								publishAudio={user.publishAudio}
+							/>
 						</Body>
 					) : (
 						<Register 
@@ -76,6 +81,17 @@ class BaseApp extends Component {
 
 		this.setState({ registering: true });
 		this.manageRooms();
+	}
+
+	toggleAudio = () => {	
+		const handle = this.props.handles[this.props.user.activeRoom];
+		let muted = handle.isAudioMuted();
+		if(muted)
+			handle.unmuteAudio();
+		else
+			handle.muteAudio();
+		muted = handle.isAudioMuted();
+		this.props.onToggleAudio();
 	}
 
 	manageRooms = () => {
@@ -111,7 +127,7 @@ class BaseApp extends Component {
 							if (room === user.activeRoom) {
 								onSetRegisteredStatus(true);
 								that.setState({ registering: false });
-								that.publishOwnFeed(handle, true);
+								that.publishOwnFeed(handle, user.publishAudio, true);
 							}
 							let publishers = msg['publishers'];
 							if (publishers !== undefined && publishers.length !== 0) {   							
@@ -125,7 +141,11 @@ class BaseApp extends Component {
 								that.setState({ publishing: false });
 							}
 							if (msg.unpublished === "ok") {		
-								that.publishOwnFeed(that.props.handles[user.activeRoom], true);
+								that.publishOwnFeed(
+									that.props.handles[user.activeRoom], 
+									user.publishAudio, 
+									true
+								);
 							}
 							if (typeof msg.unpublished === "number") {
 								onRemovePublisher(msg.unpublished);
@@ -144,9 +164,7 @@ class BaseApp extends Component {
 						handle.handleRemoteJsep({ jsep: jsep });						
 					}
 				},
-				onlocalstream: stream => {				
-					onSetStream(stream);
-				} 
+				onlocalstream: stream => onSetStream(stream),
 			})
 		});
 	}
@@ -189,9 +207,9 @@ class BaseApp extends Component {
 		})
 	}	
 
-	publishOwnFeed = (handle, withAudio) => {
+	publishOwnFeed = (handle, withAudio, withVideo) => {
 		this.setState({ publishing: true });
-		publish(handle, withAudio);
+		publish(handle, withAudio, withVideo);
 	}
 
 	changeActiveRoom = newRoom => {

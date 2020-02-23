@@ -3,6 +3,7 @@ import {
     SET_ACTIVE_ROOM,
     SET_REGISTERED_STATUS,
     SET_STREAM,
+    TOGGLE_AUDIO,
 } from '../constants/actionTypes';
 
 export const doSetUsername = username => ({
@@ -24,3 +25,5 @@ export const doSetStream = stream => ({
         type: SET_STREAM,
         payload: stream,
 });
+
+export const doToggleAudio = () => ({ type: TOGGLE_AUDIO });

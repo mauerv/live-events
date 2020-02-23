@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { Janus } from 'janus-gateway';
 
-import StreamGridItem from './StreamGridItem';
+import LocalGridItem from './LocalGridItem';
+import RemoteGridItem from './RemoteGridItem';
 
 import { StreamGridContainer } from './styles';
 
@@ -29,15 +30,27 @@ class StreamGrid extends Component {
     }
 
     render() {   
-        const { userStream, remoteStreams } = this.props;     
+        const { 
+            userStream, 
+            remoteStreams, 
+            toggleAudio,
+            publishAudio, 
+        } = this.props;     
         return (
             <StreamGridContainer>
-                {userStream ? <StreamGridItem ref={this.userVid} isMuted={"muted"}/> : null}
-                {remoteStreams[0] ? <StreamGridItem ref={this.remoteStream_0} /> : null}
-                {remoteStreams[1] ? <StreamGridItem ref={this.remoteStream_1} /> : null}
-                {remoteStreams[2] ? <StreamGridItem ref={this.remoteStream_2} /> : null}
-                {remoteStreams[3] ? <StreamGridItem ref={this.remoteStream_3} /> : null}
-                {remoteStreams[4] ? <StreamGridItem ref={this.remoteStream_4} /> : null}
+                {userStream ? (
+                    <LocalGridItem 
+                        ref={this.userVid} 
+                        isMuted={"muted"}
+                        toggleAudio={toggleAudio}
+                        publishAudio={publishAudio}
+                    />
+                ) : null}
+                {remoteStreams[0] ? <RemoteGridItem ref={this.remoteStream_0} /> : null}
+                {remoteStreams[1] ? <RemoteGridItem ref={this.remoteStream_1} /> : null}
+                {remoteStreams[2] ? <RemoteGridItem ref={this.remoteStream_2} /> : null}
+                {remoteStreams[3] ? <RemoteGridItem ref={this.remoteStream_3} /> : null}
+                {remoteStreams[4] ? <RemoteGridItem ref={this.remoteStream_4} /> : null}
             </StreamGridContainer>
         );
     }
