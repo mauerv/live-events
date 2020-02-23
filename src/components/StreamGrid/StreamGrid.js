@@ -34,7 +34,9 @@ class StreamGrid extends Component {
             userStream, 
             remoteStreams, 
             toggleAudio,
-            publishAudio, 
+            toggleVideo,
+            publishAudio,
+            publishVideo, 
         } = this.props;     
         return (
             <StreamGridContainer>
@@ -43,7 +45,9 @@ class StreamGrid extends Component {
                         ref={this.userVid} 
                         isMuted={"muted"}
                         toggleAudio={toggleAudio}
+                        toggleVideo={toggleVideo}
                         publishAudio={publishAudio}
+                        publishVideo={publishVideo}
                     />
                 ) : null}
                 {remoteStreams[0] ? <RemoteGridItem ref={this.remoteStream_0} /> : null}

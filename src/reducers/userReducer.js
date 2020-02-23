@@ -4,6 +4,7 @@ import {
     SET_REGISTERED_STATUS,
     SET_STREAM,
     TOGGLE_AUDIO,
+    TOGGLE_VIDEO,
 } from '../constants/actionTypes';
 
 const initialState = {
@@ -12,6 +13,7 @@ const initialState = {
     registered: false,
     stream: null,
     publishAudio: true,
+    publishVideo: true,
 };
 
 export default (state = initialState, action) => {
@@ -23,14 +25,12 @@ export default (state = initialState, action) => {
         case SET_REGISTERED_STATUS:
             return { ...state, registered: action.payload };
         case SET_STREAM:
-            return applySetStream(state, action);
+            return { ...state, stream: action.payload };
         case TOGGLE_AUDIO:
             return { ...state, publishAudio: !state.publishAudio };
+        case TOGGLE_VIDEO:
+            return { ...state, publishVideo: !state.publishVideo };
         default:
             return state;
     }
-}
-
-export const applySetStream = (state, action) => {
-    return { ...state, stream: action.payload };
 }

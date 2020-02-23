@@ -46,11 +46,11 @@ export const subscribeToPublisher = (room, id, videoCodec, handle) => {
     handle.send({ "message": subscribe });
 }
 
-export const publish = (handle, useAudio, useVideo) => {
+export const publish = (handle, useAudio) => {
     handle.createOffer({
         media: { 
             audioRecv: false, videoRecv: false, 
-            audioSend: useAudio, videoSend: useVideo,
+            audioSend: useAudio, videoSend: true,
         },
         success: jsep => {      
             Janus.debug("Get publisher SDP!");
@@ -58,7 +58,7 @@ export const publish = (handle, useAudio, useVideo) => {
             const publish = {
                 "request": "configure",
                 "audio": useAudio,
-                "video": useVideo,
+                "video": true,
             };
             handle.send({ "message": publish, "jsep": jsep });
         },

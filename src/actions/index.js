@@ -19,6 +19,7 @@ import {
     doSetRegisteredStatus, 
     doSetStream,
     doToggleAudio,
+    doToggleVideo,
 } from './userActions';
 
 export {
@@ -33,6 +34,7 @@ export {
     doSetRegisteredStatus,
     doSetStream,
     doToggleAudio,
+    doToggleVideo,
     doSetRoomList,
     doSetRemoteStream,
     doRemoveRemoteStream,

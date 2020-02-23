@@ -4,6 +4,7 @@ import {
     SET_REGISTERED_STATUS,
     SET_STREAM,
     TOGGLE_AUDIO,
+    TOGGLE_VIDEO,
 } from '../constants/actionTypes';
 
 export const doSetUsername = username => ({
@@ -27,3 +28,5 @@ export const doSetStream = stream => ({
 });
 
 export const doToggleAudio = () => ({ type: TOGGLE_AUDIO });
+
+export const doToggleVideo = () => ({ type: TOGGLE_VIDEO });

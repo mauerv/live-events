@@ -15,6 +15,7 @@ const LocalGridItem = React.forwardRef((props, ref) => (
             muted={props.isMuted}
         ></StreamVideo>
         <button onClick={props.toggleAudio}>{props.publishAudio ? "Mute" : "Unmute"}</button>
+        <button onClick={props.toggleVideo}>{props.publishVideo ? "Video Off" : "Video On"}</button>
     </StreamContainer>
 ));
 

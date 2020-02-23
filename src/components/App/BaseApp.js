@@ -54,7 +54,9 @@ class BaseApp extends Component {
 								userStream={user.stream} 
 								remoteStreams={streamList} 
 								toggleAudio={this.toggleAudio}
+								toggleVideo={this.toggleVideo}
 								publishAudio={user.publishAudio}
+								publishVideo={user.publishVideo}
 							/>
 						</Body>
 					) : (
@@ -90,8 +92,17 @@ class BaseApp extends Component {
 			handle.unmuteAudio();
 		else
 			handle.muteAudio();
-		muted = handle.isAudioMuted();
 		this.props.onToggleAudio();
+	}
+
+	toggleVideo = () => {	
+		const handle = this.props.handles[this.props.user.activeRoom];
+		let muted = handle.isVideoMuted();
+		if(muted)
+			handle.unmuteVideo();
+		else
+			handle.muteVideo();
+		this.props.onToggleVideo();
 	}
 
 	manageRooms = () => {
@@ -127,7 +138,7 @@ class BaseApp extends Component {
 							if (room === user.activeRoom) {
 								onSetRegisteredStatus(true);
 								that.setState({ registering: false });
-								that.publishOwnFeed(handle, user.publishAudio, true);
+								that.publishOwnFeed(handle, user.publishAudio);
 							}
 							let publishers = msg['publishers'];
 							if (publishers !== undefined && publishers.length !== 0) {   							
@@ -138,13 +149,17 @@ class BaseApp extends Component {
 							}   
 						} else if (event === "event") {
 							if (msg.configured === "ok") {
+								// can't directly publish without video, workaround.
+								if (handle.isVideoMuted() === user.publishVideo) {
+									handle.muteVideo();
+								}
 								that.setState({ publishing: false });
 							}
 							if (msg.unpublished === "ok") {		
 								that.publishOwnFeed(
 									that.props.handles[user.activeRoom], 
 									user.publishAudio, 
-									true
+									
 								);
 							}
 							if (typeof msg.unpublished === "number") {
@@ -207,9 +222,9 @@ class BaseApp extends Component {
 		})
 	}	
 
-	publishOwnFeed = (handle, withAudio, withVideo) => {
+	publishOwnFeed = (handle, withAudio) => {
 		this.setState({ publishing: true });
-		publish(handle, withAudio, withVideo);
+		publish(handle, withAudio);
 	}
 
 	changeActiveRoom = newRoom => {
