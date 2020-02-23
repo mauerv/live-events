@@ -13,6 +13,7 @@ export const RegisterContainer = styled.div`
 export const RegisterTitle = styled.h1`
     color: white;
     padding: 20px 50px;
+    margin-bottom: 0;
     background-color: #b86953;
 `
 
@@ -20,5 +21,11 @@ export const RegisterPrompt = styled.p`
     color: white;
     margin: 5px;
     font-size: 1.1rem;
+`
+
+export const RegisterDescription = styled.p`
+    color: white;
+    font-size: 1.25rem;
+    text-align: center;
 `
 
