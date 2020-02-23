@@ -15,6 +15,7 @@ export const RoomListTitle = styled.h1`
 
 export const RoomContainer = styled.div`
     border: 1px #b86953 solid;
+    background-color: ${props => props.isActive ? "#f19f69" : "auto"};
     padding: 15px;
     &:hover {
         cursor: pointer;

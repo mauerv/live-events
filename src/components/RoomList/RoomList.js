@@ -3,7 +3,11 @@ import React from 'react';
 import RoomListItem from './RoomListItem';
 import { RoomListContainer, RoomListTitle } from './styles';
 
-const RoomList = ({ roomList, onRoomClick }) => (
+const RoomList = ({ 
+    roomList, 
+    onRoomClick,
+    activeRoom,
+ }) => (
     <RoomListContainer>
         <RoomListTitle>Video Rooms</RoomListTitle>
         {roomList.map(room => (
@@ -11,6 +15,7 @@ const RoomList = ({ roomList, onRoomClick }) => (
                 key={room.room} 
                 room={room} 
                 onRoomClick={onRoomClick} 
+                isActive={activeRoom === room.room}
             />
         ))}
     </RoomListContainer>

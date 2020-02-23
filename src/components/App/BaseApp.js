@@ -44,7 +44,11 @@ class BaseApp extends Component {
 					<div>
 					{user.registered ? (
 						<Body>
-							<RoomList roomList={roomList} onRoomClick={this.changeActiveRoom} />
+							<RoomList 
+								roomList={roomList} 
+								onRoomClick={this.changeActiveRoom} 
+								activeRoom={user.activeRoom}
+							/>
 							<StreamGrid userStream={user.stream} remoteStreams={streamList} />
 						</Body>
 					) : (
