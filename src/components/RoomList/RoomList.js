@@ -7,6 +7,7 @@ const RoomList = ({
     roomList, 
     onRoomClick,
     activeRoom,
+    publishing,
  }) => (
     <RoomListContainer>
         <RoomListTitle>Video Rooms</RoomListTitle>
@@ -16,6 +17,7 @@ const RoomList = ({
                 room={room} 
                 onRoomClick={onRoomClick} 
                 isActive={activeRoom === room.room}
+                publishing={publishing}
             />
         ))}
     </RoomListContainer>

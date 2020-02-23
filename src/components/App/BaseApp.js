@@ -36,7 +36,7 @@ class BaseApp extends Component {
 			roomList, 
 			streamList,
 		} = this.props;
-		const { registering } = this.state;
+		const { registering, publishing } = this.state;
 
 		return (
 			<div>
@@ -48,6 +48,7 @@ class BaseApp extends Component {
 								roomList={roomList} 
 								onRoomClick={this.changeActiveRoom} 
 								activeRoom={user.activeRoom}
+								publishing={publishing}
 							/>
 							<StreamGrid userStream={user.stream} remoteStreams={streamList} />
 						</Body>

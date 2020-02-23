@@ -7,11 +7,17 @@ import {
     RoomTitle,
 } from './styles';
 
-const RoomListItem = ({ room, onRoomClick, isActive }) => {
+const RoomListItem = ({ 
+    room, 
+    onRoomClick, 
+    isActive,
+    publishing,
+}) => {
     return (
         <RoomContainer 
             onClick={() => onRoomClick(room.room)} 
             isActive={isActive}
+            publishing={publishing}
         >
             <RoomTitle>{room.description}</RoomTitle>
             <ParticipantList participants={room.participants} />
