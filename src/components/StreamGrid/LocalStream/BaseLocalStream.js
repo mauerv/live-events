@@ -7,14 +7,11 @@ import {
 } from './styles'
 
 class LocalGridItem extends PureComponent {
-    constructor(props) {
-        super(props);
-        this.vid = React.createRef();
-    }
+    vidRef = React.createRef();
 
     componentDidUpdate(prevProps, prevState) {
         const { stream } = this.props.user;
-        if (stream !== null) Janus.attachMediaStream(this.vid.current, stream);
+        if (stream !== null) Janus.attachMediaStream(this.vidRef.current, stream);
     }
 
     render() {
@@ -23,7 +20,7 @@ class LocalGridItem extends PureComponent {
         return (
             <StreamContainer>
                 <StreamVideo 
-                    ref={this.vid}
+                    ref={this.vidRef}
                     autoPlay
                     playsInline
                     controls={false} 

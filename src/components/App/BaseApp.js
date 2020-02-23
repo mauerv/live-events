@@ -78,8 +78,6 @@ class BaseApp extends Component {
 		this.manageRooms();
 	}
 
-
-
 	manageRooms = () => {
 		const { 
 			janus, 
