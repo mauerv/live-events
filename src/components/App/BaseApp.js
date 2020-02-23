@@ -50,14 +50,7 @@ class BaseApp extends Component {
 								activeRoom={user.activeRoom}
 								publishing={publishing}
 							/>
-							<StreamGrid 
-								userStream={user.stream} 
-								remoteStreams={streamList} 
-								toggleAudio={this.toggleAudio}
-								toggleVideo={this.toggleVideo}
-								publishAudio={user.publishAudio}
-								publishVideo={user.publishVideo}
-							/>
+							<StreamGrid remoteStreams={streamList} />
 						</Body>
 					) : (
 						<Register 
@@ -85,25 +78,7 @@ class BaseApp extends Component {
 		this.manageRooms();
 	}
 
-	toggleAudio = () => {	
-		const handle = this.props.handles[this.props.user.activeRoom];
-		let muted = handle.isAudioMuted();
-		if(muted)
-			handle.unmuteAudio();
-		else
-			handle.muteAudio();
-		this.props.onToggleAudio();
-	}
 
-	toggleVideo = () => {	
-		const handle = this.props.handles[this.props.user.activeRoom];
-		let muted = handle.isVideoMuted();
-		if(muted)
-			handle.unmuteVideo();
-		else
-			handle.muteVideo();
-		this.props.onToggleVideo();
-	}
 
 	manageRooms = () => {
 		const { 

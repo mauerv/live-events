@@ -32,3 +32,7 @@ export const getRoomIds = roomData => {
     }
     return roomIds;
 }
+
+export const getActiveHandle = state => {
+    return state.handles[state.user.activeRoom];
+}

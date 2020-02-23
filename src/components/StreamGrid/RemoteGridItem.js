@@ -1,19 +1,23 @@
-import React from 'react';
+import React, { Component } from 'react';
 
 import { 
     StreamContainer,
     StreamVideo,
 } from './styles'
 
-const RemoteGridItem = React.forwardRef((props, ref) => (
-    <StreamContainer>
-        <StreamVideo 
-            ref={ref}
-            autoPlay
-            playsInline
-            controls={false} 
-        ></StreamVideo>
-    </StreamContainer>
-));
+class RemoteGridItem extends Component {
+    render() {
+        return (
+            <StreamContainer>
+                <StreamVideo 
+                    ref={this.props.videoRef}
+                    autoPlay
+                    playsInline
+                    controls={false} 
+                />
+            </StreamContainer>
+        )
+    }
+}
 
 export default RemoteGridItem;
