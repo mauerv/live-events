@@ -71,6 +71,7 @@ class BaseApp extends Component {
 		e.preventDefault();
 
 		if (this.state.registering === true) return;
+		if (this.props.user.username.length === 0) return;
 
 		this.setState({ registering: true });
 		this.manageRooms();
@@ -90,8 +91,6 @@ class BaseApp extends Component {
 			onRemoveRemoteStream,
 		} = this.props;
 		const that = this;
-
-		if (user.username.length === 0) return;
 
 		roomIds.forEach(room => {      
 			janus.attach({
