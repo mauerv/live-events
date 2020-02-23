@@ -7,7 +7,7 @@ import {
 
 const initialState = {
     username: "",
-    activeRoom: 2345,
+    activeRoom: 1234,
     registered: false,
     stream: null,
 };
