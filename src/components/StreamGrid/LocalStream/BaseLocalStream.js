@@ -19,19 +19,27 @@ class LocalGridItem extends PureComponent {
 
         return (
             <StreamContainer>
-                <StreamVideo 
-                    ref={this.vidRef}
-                    autoPlay
-                    playsInline
-                    controls={false} 
-                    muted="muted"
-                ></StreamVideo>
-                <button onClick={this.toggleAudio}>
-                    {user.publishAudio ? "Mute" : "Unmute"}
-                </button>
-                <button onClick={this.toggleVideo}>
-                    {user.publishVideo ? "Video Off" : "Video On"}
-                </button>
+                {user.published === "publishing" ? (
+                    <div>
+                        ...Loading
+                    </div>
+                ) : (
+                    <div>
+                        <StreamVideo 
+                            ref={this.vidRef}
+                            autoPlay
+                            playsInline
+                            controls={false} 
+                            muted="muted"
+                        ></StreamVideo>
+                        <button onClick={this.toggleAudio}>
+                            {user.publishAudio ? "Mute" : "Unmute"}
+                        </button>
+                        <button onClick={this.toggleVideo}>
+                            {user.publishVideo ? "Video Off" : "Video On"}
+                        </button>
+                    </div>  
+                )}
             </StreamContainer>
         );
     }
