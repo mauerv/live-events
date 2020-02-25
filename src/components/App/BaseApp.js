@@ -176,7 +176,6 @@ class BaseApp extends Component {
 					}
 				},
 				onremotestream: stream => {
-					console.log("I come first (onremotestream)")
 					onSetSubscriptionStream(publisher.id, stream);
 				},
 				oncleanup: () => {}
@@ -195,6 +194,8 @@ class BaseApp extends Component {
 			onSetActiveRoom, 
 			subscriptions, 
 			onRemoveSubscription,
+			onSetStream,
+			onSetPublishedStatus,
 			publishers,
 			handles,
 		} = this.props;
@@ -202,6 +203,8 @@ class BaseApp extends Component {
 		if (newRoom === user.activeRoom) return;
 		if (user.published !== "published") return;
 		
+		onSetPublishedStatus(false);
+		onSetStream(null);
 		unpublish(handles[user.activeRoom]);
 		Object.keys(subscriptions).forEach(key => onRemoveSubscription(key));
 		
