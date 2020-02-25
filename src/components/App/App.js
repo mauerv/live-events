@@ -1,10 +1,6 @@
 import { connect } from 'react-redux';
 
-import { 
-    getRoomList,
-    getRoomIds,
-    getRemoteStreamList,
-} from '../../selectors';
+import { getRoomList, getRoomIds } from '../../selectors';
 import { 
     doSetJanus,
     doSetHandle,
@@ -32,7 +28,6 @@ const mapStateToProps = state => ({
     isRoomListSet: state.roomData.isSet,
     roomIds: getRoomIds(state.roomData),
     roomList: getRoomList(state),
-    streamList: getRemoteStreamList(state.subscriptions),
     publishers: state.publishers,
 });
 

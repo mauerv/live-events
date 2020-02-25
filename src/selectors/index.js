@@ -21,14 +21,6 @@ export const getRoomList = ({ publishers, roomData, user }) => {
     return roomList;
 }
 
-export const getRemoteStreamList = subscriptions => {
-    let remoteStreamList = [];
-    Object.values(subscriptions).forEach(s => {
-        if (s.stream !== null) remoteStreamList.push(s.stream);
-    });
-    return remoteStreamList;
-}
-
 export const getRoomIds = roomData => {
     let roomIds = [];
     for (const key in roomData.rooms) {

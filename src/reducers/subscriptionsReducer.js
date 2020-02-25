@@ -43,7 +43,7 @@ export const applySetSubscriptionStream = (state, action) => {
     return newState;
 }
 
-export const applySetSubscriptionIceState = (state, action) => {
+export const applySetSubscriptionIceState = (state, action) => {    
     let newState = { ...state };
     newState[action.payload.id].iceState = action.payload.iceState;
     return newState;

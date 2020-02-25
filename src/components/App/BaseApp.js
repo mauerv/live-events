@@ -29,7 +29,6 @@ class BaseApp extends Component {
 			user,
 			isRoomListSet, 
 			roomList, 
-			streamList, 
 		} = this.props;
 
 		return (
@@ -44,7 +43,7 @@ class BaseApp extends Component {
 								activeRoom={user.activeRoom}
 								publishing={user.publishing}
 							/>
-							<StreamGrid remoteStreams={streamList} /> 
+							<StreamGrid /> 
 						</Body>
 					) : (
 						<Register initializeApp={this.manageRooms} />
@@ -136,7 +135,12 @@ class BaseApp extends Component {
 	}
 
 	newRemoteFeeds = (room, publishers) => {
-		const { janus, onSetSubscription, onSetSubscriptionStream} = this.props;
+		const { 
+			janus, 
+			onSetSubscription, 
+			onSetSubscriptionStream,
+			onSetSubscriptionIceState,
+		} = this.props;
 		const that = this;		
 
 		publishers.forEach(publisher => {			
@@ -152,6 +156,12 @@ class BaseApp extends Component {
 					);
 				},
 				error: error => console.log(error),
+				iceState: state => {
+					if (state === "connected") {
+						console.log("I come first (iceConnected)")
+						onSetSubscriptionIceState(publisher.id, "connected");
+					}
+				},
 				onmessage: (msg, jsep) => {
 					const subscriptionHandle = that.props.subscriptions[publisher.id].handle;
 					if (jsep !== undefined) {						
@@ -166,6 +176,7 @@ class BaseApp extends Component {
 					}
 				},
 				onremotestream: stream => {
+					console.log("I come first (onremotestream)")
 					onSetSubscriptionStream(publisher.id, stream);
 				},
 				oncleanup: () => {}

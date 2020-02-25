@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import { Janus } from 'janus-gateway';
 
 import { 
@@ -6,30 +6,37 @@ import {
     StreamVideo,
 } from './styles'
 
-class RemoteGridItem extends PureComponent {
+class RemoteStream extends Component {
     vidRef = React.createRef();
 
-    componentDidUpdate(prevProps, prevState) {        
+    componentDidUpdate(prevProps, prevState) {  
         const { stream } = this.props;
-        if (stream !== undefined) Janus.attachMediaStream(this.vidRef.current, stream);
+        if (stream !== null) Janus.attachMediaStream(this.vidRef.current, stream);
     }
 
     render() {
+        const { stream, iceState } = this.props;
         return (
             <div>
-                {this.props.stream !== undefined ? (
-                    <StreamContainer>
-                        <StreamVideo 
-                            ref={this.vidRef}
-                            autoPlay
-                            playsInline
-                            controls={false} 
-                        />
-                    </StreamContainer>
+                {stream !== null ? (
+                    <div>
+                        {iceState === "connected" ? (
+                            <StreamContainer>
+                                <StreamVideo 
+                                    ref={this.vidRef}
+                                    autoPlay
+                                    playsInline
+                                    controls={false} 
+                                />
+                            </StreamContainer>
+                        ) : (
+                            <div>Joining...</div>
+                        )}
+                    </div>
                 ) : null}
             </div>
         )
     }
 }
 
-export default RemoteGridItem;
+export default RemoteStream;
