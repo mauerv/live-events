@@ -18,7 +18,6 @@ import {
 
 class BaseApp extends Component {
 	state = {
-		registering: false,
 		publishing: false,
 	};
 	componentDidMount() {
@@ -36,13 +35,13 @@ class BaseApp extends Component {
 			roomList, 
 			streamList,
 		} = this.props;
-		const { registering, publishing } = this.state;
+		const { publishing } = this.state;
 
 		return (
 			<div>
 				{janus && isRoomListSet ? (
 					<div>
-					{user.registered ? (
+					{user.registered === "registered" ? (
 						<Body>
 							<RoomList 
 								roomList={roomList} 
@@ -53,29 +52,12 @@ class BaseApp extends Component {
 							<StreamGrid remoteStreams={streamList} />
 						</Body>
 					) : (
-						<Register 
-							onChange={this.handleChange} 
-							onSubmit={this.handleSubmit} 
-							value={user.username} 
-							registering={registering}
-						/>
+						<Register initializeApp={this.manageRooms} />
 					)}
 					</div>
 				) : <Loading />}
 			</div>
 		)
-	}
-
-	handleChange = e => this.props.onSetUsername(e.target.value);
-
-	handleSubmit = e => {
-		e.preventDefault();
-
-		if (this.state.registering === true) return;
-		if (this.props.user.username.length === 0) return;
-
-		this.setState({ registering: true });
-		this.manageRooms();
 	}
 
 	manageRooms = () => {
@@ -101,6 +83,11 @@ class BaseApp extends Component {
 					registerInRoom(room, user.username, pluginHandle);
 				},
 				error: error => console.log(error),
+				iceState: state => {
+					if (state === "connected") {
+						that.setState({ publishing: false });
+					}
+				},
 				onmessage: (msg, jsep) => {
 					const { user } = that.props;
 					const handle = that.props.handles[room];
@@ -109,8 +96,7 @@ class BaseApp extends Component {
 					if (event !== undefined) {
 						if (event === "joined") {     						   
 							if (room === user.activeRoom) {
-								onSetRegisteredStatus(true);
-								that.setState({ registering: false });
+								onSetRegisteredStatus("registered");
 								that.publishOwnFeed(handle, user.publishAudio);
 							}
 							let publishers = msg['publishers'];
@@ -126,7 +112,6 @@ class BaseApp extends Component {
 								if (handle.isVideoMuted() === user.publishVideo) {
 									handle.muteVideo();
 								}
-								that.setState({ publishing: false });
 							}
 							if (msg.unpublished === "ok") {		
 								that.publishOwnFeed(

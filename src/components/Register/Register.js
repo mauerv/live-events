@@ -1,33 +1,20 @@
-import React from 'react';
+import { connect } from 'react-redux';
 
-import SimpleForm from '../SimpleForm/SimpleForm';
+import {
+    doSetRegisteredStatus,
+    doSetUsername,
+} from '../../actions';
 
-import { 
-    RegisterContainer,
-    RegisterTitle, 
-    RegisterPrompt,
-    RegisterDescription,
-} from './styles';
+import BaseRegister from './BaseRegister';
 
-const Register = ({ 
-    onChange, 
-    onSubmit, 
-    value,
-    registering,
-}) => (
-    <RegisterContainer>
-        <RegisterTitle>Welcome to Eventis</RegisterTitle>
-        <RegisterDescription>
-            Welcome to an experiment on digital events. Please input a nickname to use at the rooms.
-        </RegisterDescription>
-        {registering ? <RegisterPrompt>Please wait while we set up...</RegisterPrompt> : null}
-        <SimpleForm 
-            onChange={onChange} 
-            onSubmit={onSubmit} 
-            value={value} 
-            submitDisabled={registering}
-        />
-    </RegisterContainer>
-)
+const mapStateToProps = state => ({
+    user: state.user,
+});
 
-export default Register;
+export default connect(
+    mapStateToProps,
+    {
+        onSetRegisteredStatus: doSetRegisteredStatus,
+        onSetUsername: doSetUsername,
+    }
+)(BaseRegister);
