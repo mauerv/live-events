@@ -8,8 +8,10 @@ import {
 import { 
     doSetJanus,
     doSetHandle,
-    doSetSubscriptionHandle,
-    doRemoveSubscriptionHandle,
+    doSetSubscription,
+    doRemoveSubscription,
+    doSetSubscriptionIceState,
+    doSetSubscriptionStream,
     doSetUsername,
     doSetActiveRoom,
     doSetRegisteredStatus,
@@ -18,8 +20,6 @@ import {
     doRemovePublisher,
     doSetRoomList,
     doSetStream,
-    doSetRemoteStream,
-    doRemoveRemoteStream,
 } from '../../actions';
 
 import BaseApp from './BaseApp';
@@ -32,7 +32,7 @@ const mapStateToProps = state => ({
     isRoomListSet: state.roomData.isSet,
     roomIds: getRoomIds(state.roomData),
     roomList: getRoomList(state),
-    streamList: getRemoteStreamList(state.remoteStreams),
+    streamList: getRemoteStreamList(state.subscriptions),
     publishers: state.publishers,
 });
 
@@ -41,8 +41,10 @@ export default connect(
     { 
         onSetJanus: doSetJanus,
         onSetHandle: doSetHandle,
-        onSetSubscriptionHandle: doSetSubscriptionHandle,
-        onRemoveSubscriptionHandle: doRemoveSubscriptionHandle,
+        onSetSubscription: doSetSubscription,
+        onRemoveSubscription: doRemoveSubscription,
+        onSetSubscriptionIceState: doSetSubscriptionIceState,
+        onSetSubscriptionStream: doSetSubscriptionStream,
         onSetUsername: doSetUsername,
         onSetActiveRoom: doSetActiveRoom,
         onSetRegisteredStatus: doSetRegisteredStatus,
@@ -51,7 +53,5 @@ export default connect(
         onSetPublisherList: doSetPublisherList,
         onRemovePublisher: doRemovePublisher,
         onSetRoomList: doSetRoomList,
-        onSetRemoteStream: doSetRemoteStream,
-        onRemoveRemoteStream: doRemoveRemoteStream,
     }
 )(BaseApp);

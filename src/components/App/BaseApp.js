@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Janus } from 'janus-gateway';
 
 import RoomList from '../RoomList/RoomList';
 import Register from '../Register/Register';
@@ -30,7 +29,7 @@ class BaseApp extends Component {
 			user,
 			isRoomListSet, 
 			roomList, 
-			streamList,
+			streamList, 
 		} = this.props;
 
 		return (
@@ -45,7 +44,7 @@ class BaseApp extends Component {
 								activeRoom={user.activeRoom}
 								publishing={user.publishing}
 							/>
-							<StreamGrid remoteStreams={streamList} />
+							<StreamGrid remoteStreams={streamList} /> 
 						</Body>
 					) : (
 						<Register initializeApp={this.manageRooms} />
@@ -61,14 +60,13 @@ class BaseApp extends Component {
 			janus, 
 			user, 
 			roomIds, 
-			onRemoveSubscriptionHandle,
+			onRemoveSubscription,
 			onSetRegisteredStatus,
 			onSetPublishedStatus,
 			onSetPublisherList,
 			onRemovePublisher,
 			onSetHandle,
 			onSetStream,
-			onRemoveRemoteStream,
 		} = this.props;
 		const that = this;
 
@@ -97,7 +95,7 @@ class BaseApp extends Component {
 								that.publishOwnFeed(handle, user.publishAudio);
 							}
 							let publishers = msg['publishers'];
-							if (publishers !== undefined && publishers.length !== 0) {   							
+							if (publishers !== undefined && publishers.length !== 0) {   					
 								onSetPublisherList(publishers, room);
 								if (room === user.activeRoom) {	
 									that.newRemoteFeeds(room, publishers);
@@ -114,13 +112,11 @@ class BaseApp extends Component {
 								that.publishOwnFeed(
 									that.props.handles[user.activeRoom], 
 									user.publishAudio, 
-									
 								);
 							}
 							if (typeof msg.unpublished === "number") {
 								onRemovePublisher(msg.unpublished);
-								onRemoveRemoteStream(msg.unpublished);
-								onRemoveSubscriptionHandle(msg.unpublished);
+								onRemoveSubscription(msg.unpublished);
 							}
 							if (msg.publishers !== undefined) {			
 								onSetPublisherList(msg.publishers, room);
@@ -140,14 +136,14 @@ class BaseApp extends Component {
 	}
 
 	newRemoteFeeds = (room, publishers) => {
-		const { janus, onSetSubscriptionHandle, onSetRemoteStream} = this.props;
+		const { janus, onSetSubscription, onSetSubscriptionStream} = this.props;
 		const that = this;		
 
 		publishers.forEach(publisher => {			
 			janus.attach({
 				plugin: "janus.plugin.videoroom",
-				success: pluginHandle => {		
-					onSetSubscriptionHandle(publisher.id, pluginHandle);
+				success: pluginHandle => {	
+					onSetSubscription(publisher.id, pluginHandle);
 					subscribeToPublisher(
 						room, 
 						publisher.id, 
@@ -157,20 +153,20 @@ class BaseApp extends Component {
 				},
 				error: error => console.log(error),
 				onmessage: (msg, jsep) => {
-					const subscription = that.props.subscriptions[publisher.id];
+					const subscriptionHandle = that.props.subscriptions[publisher.id].handle;
 					if (jsep !== undefined) {						
-						subscription.createAnswer({
+						subscriptionHandle.createAnswer({
 							jsep: jsep,
 							media: { audioSend: false, videoSend: false },
 							success: jsep => {
 								const body = { "request": "start", "room": room };
-								subscription.send({ "message": body, "jsep": jsep });
+								subscriptionHandle.send({ "message": body, "jsep": jsep });
 							}
 						})
 					}
 				},
 				onremotestream: stream => {
-					onSetRemoteStream(stream, publisher.id);
+					onSetSubscriptionStream(publisher.id, stream);
 				},
 				oncleanup: () => {}
 			})
@@ -187,8 +183,7 @@ class BaseApp extends Component {
 			user, 
 			onSetActiveRoom, 
 			subscriptions, 
-			onRemoveRemoteStream,
-			onRemoveSubscriptionHandle,
+			onRemoveSubscription,
 			publishers,
 			handles,
 		} = this.props;
@@ -197,10 +192,7 @@ class BaseApp extends Component {
 		if (user.published !== "published") return;
 		
 		unpublish(handles[user.activeRoom]);
-		for (const key in subscriptions) {
-			onRemoveRemoteStream(key);
-			onRemoveSubscriptionHandle(key);
-		}
+		Object.keys(subscriptions).forEach(key => onRemoveSubscription(key));
 		
 		let activeRoomPublishers = Object.values(publishers).filter(p => p.room === newRoom);
 		

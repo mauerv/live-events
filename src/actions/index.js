@@ -2,13 +2,11 @@ import { doSetJanus } from './janusActions';
 import { doSetHandle } from './handlesActions';
 import { doSetRoomList } from './roomsActions';
 import { 
-    doSetSubscriptionHandle,
-    doRemoveSubscriptionHandle, 
+    doSetSubscription,
+    doRemoveSubscription,
+    doSetSubscriptionIceState,
+    doSetSubscriptionStream, 
 } from './subscriptionsActions';
-import { 
-    doSetRemoteStream,
-    doRemoveRemoteStream, 
-} from './remoteStreamsActions';
 import {
     doSetPublisherList,
     doRemovePublisher,
@@ -26,8 +24,10 @@ import {
 export {
     doSetJanus,
     doSetHandle,
-    doSetSubscriptionHandle,
-    doRemoveSubscriptionHandle,
+    doSetSubscription,
+    doRemoveSubscription,
+    doSetSubscriptionIceState,
+    doSetSubscriptionStream, 
     doSetPublisherList,
     doRemovePublisher,
     doSetUsername,
@@ -38,6 +38,4 @@ export {
     doToggleAudio,
     doToggleVideo,
     doSetRoomList,
-    doSetRemoteStream,
-    doRemoveRemoteStream,
 }
