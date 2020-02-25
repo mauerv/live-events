@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { Janus } from 'janus-gateway';
 
 import { 
@@ -6,7 +6,7 @@ import {
     StreamVideo,
 } from './styles'
 
-class RemoteStream extends Component {
+class RemoteStream extends PureComponent {
     vidRef = React.createRef();
 
     componentDidUpdate(prevProps, prevState) {  
