@@ -41,7 +41,7 @@ class BaseApp extends Component {
 								roomList={roomList} 
 								onRoomClick={this.changeActiveRoom} 
 								activeRoom={user.activeRoom}
-								publishing={user.publishing}
+								publishing={user.published}
 							/>
 							<StreamGrid /> 
 						</Body>

@@ -17,7 +17,7 @@ const RoomListItem = ({
         <RoomContainer 
             onClick={() => onRoomClick(room.room)} 
             isActive={isActive}
-            publishing={publishing}
+            publishing={publishing === "publishing"}
         >
             <RoomTitle>{room.description}</RoomTitle>
             <ParticipantList participants={room.participants} />
