@@ -39,12 +39,17 @@ export const applyRemoveSubscription = (state, action) => {
 
 export const applySetSubscriptionStream = (state, action) => {
     let newState = { ...state };
-    newState[action.payload.id].stream = action.payload.stream;
+    if (newState[action.payload.id] !== undefined) {
+        newState[action.payload.id].stream = action.payload.stream;
+    }
+    
     return newState;
 }
 
 export const applySetSubscriptionIceState = (state, action) => {    
     let newState = { ...state };
-    newState[action.payload.id].iceState = action.payload.iceState;
+    if (newState[action.payload.id] !== undefined) {
+        newState[action.payload.id].iceState = action.payload.iceState;
+    }
     return newState;
 }
