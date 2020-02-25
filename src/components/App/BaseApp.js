@@ -17,9 +17,6 @@ import {
 } from '../../services/janus';
 
 class BaseApp extends Component {
-	state = {
-		publishing: false,
-	};
 	componentDidMount() {
 		janusInit(janus => {
 			this.props.onSetJanus(janus);
@@ -35,7 +32,6 @@ class BaseApp extends Component {
 			roomList, 
 			streamList,
 		} = this.props;
-		const { publishing } = this.state;
 
 		return (
 			<div>
@@ -47,7 +43,7 @@ class BaseApp extends Component {
 								roomList={roomList} 
 								onRoomClick={this.changeActiveRoom} 
 								activeRoom={user.activeRoom}
-								publishing={publishing}
+								publishing={user.publishing}
 							/>
 							<StreamGrid remoteStreams={streamList} />
 						</Body>
@@ -67,6 +63,7 @@ class BaseApp extends Component {
 			roomIds, 
 			onRemoveSubscriptionHandle,
 			onSetRegisteredStatus,
+			onSetPublishedStatus,
 			onSetPublisherList,
 			onRemovePublisher,
 			onSetHandle,
@@ -85,7 +82,7 @@ class BaseApp extends Component {
 				error: error => console.log(error),
 				iceState: state => {
 					if (state === "connected") {
-						that.setState({ publishing: false });
+						onSetPublishedStatus("published");
 					}
 				},
 				onmessage: (msg, jsep) => {
@@ -181,7 +178,7 @@ class BaseApp extends Component {
 	}	
 
 	publishOwnFeed = (handle, withAudio) => {
-		this.setState({ publishing: true });
+		this.props.onSetPublishedStatus("publishing");
 		publish(handle, withAudio);
 	}
 
@@ -195,10 +192,9 @@ class BaseApp extends Component {
 			publishers,
 			handles,
 		} = this.props;
-		const { publishing } = this.state;
 
 		if (newRoom === user.activeRoom) return;
-		if (publishing === true) return;
+		if (user.published !== "published") return;
 		
 		unpublish(handles[user.activeRoom]);
 		for (const key in subscriptions) {
