@@ -158,7 +158,6 @@ class BaseApp extends Component {
 				error: error => console.log(error),
 				iceState: state => {
 					if (state === "connected") {
-						console.log("I come first (iceConnected)")
 						onSetSubscriptionIceState(publisher.id, "connected");
 					}
 				},
@@ -176,7 +175,6 @@ class BaseApp extends Component {
 					}
 				},
 				onremotestream: stream => {
-					console.log("I come first (onremotestream)")
 					onSetSubscriptionStream(publisher.id, stream);
 				},
 				oncleanup: () => {}
