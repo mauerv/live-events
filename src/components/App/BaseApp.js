@@ -159,7 +159,6 @@ class BaseApp extends Component {
 				},
 				error: error => console.log(error),
 				iceState: state => {
-					console.log("ICE State of remote", state)
 					if (state === "connected") {
 						onSetSubscriptionIceState(publisher.id, "connected");
 					}

@@ -20,16 +20,12 @@ class RemoteStream extends PureComponent {
             <StreamContainer>
                 {stream !== null ? (
                     <div>
-                        {iceState === "connected" ? (
-                            <StreamVideo 
-                                ref={this.vidRef}
-                                autoPlay
-                                playsInline
-                                controls={false} 
-                            />
-                        ) : (
-                            <div>Joining...</div>
-                        )}
+                        <StreamVideo 
+                            ref={this.vidRef}
+                            autoPlay
+                            playsInline
+                            controls={false} 
+                        />
                     </div>
                 ) : null}
             </StreamContainer>
