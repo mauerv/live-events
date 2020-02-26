@@ -2,15 +2,18 @@ import React from 'react';
 
 import ParticipantListItem from './ParticipantListItem';
 
-const ParticipantList = ({ participants }) => (
-    <div>
+import { ParticipantListContainer } from './styles';
+
+const ParticipantList = ({ participants, isActive }) => (
+    <ParticipantListContainer>
         {participants.map(participant => (
             <ParticipantListItem 
                 key={participant.id}
                 participant={participant}
+                isActive={isActive}
             />
         ))}
-    </div>
+    </ParticipantListContainer>
 ) 
 
 export default ParticipantList

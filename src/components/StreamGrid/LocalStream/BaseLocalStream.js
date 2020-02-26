@@ -1,6 +1,8 @@
 import React, { PureComponent } from 'react';
 import { Janus } from 'janus-gateway';
 
+import StreamOverlay from '../StreamOverlay';
+
 import { 
     StreamContainer,
     StreamVideo,
@@ -15,31 +17,26 @@ class LocalGridItem extends PureComponent {
     }
 
     render() {
+        console.log("I'm rendering with user:", this.props.user);
+        
         const { user } = this.props;
 
         return (
             <StreamContainer>
-                {user.published === "publishing" ? (
-                    <div>
-                        ...Loading
-                    </div>
-                ) : (
-                    <div>
-                        <StreamVideo 
-                            ref={this.vidRef}
-                            autoPlay
-                            playsInline
-                            controls={false} 
-                            muted="muted"
-                        ></StreamVideo>
-                        <button onClick={this.toggleAudio}>
-                            {user.publishAudio ? "Mute" : "Unmute"}
-                        </button>
-                        <button onClick={this.toggleVideo}>
-                            {user.publishVideo ? "Video Off" : "Video On"}
-                        </button>
-                    </div>  
-                )}
+                <StreamVideo 
+                    ref={this.vidRef}
+                    autoPlay
+                    playsInline
+                    controls={false} 
+                    muted="muted"
+                ></StreamVideo>
+                <StreamOverlay isPublishing={user.published === "publishing"} text="Joining..." />
+                <button onClick={this.toggleAudio}>
+                    {user.publishAudio ? "Mute" : "Unmute"}
+                </button>
+                <button onClick={this.toggleVideo}>
+                    {user.publishVideo ? "Video Off" : "Video On"}
+                </button>
             </StreamContainer>
         );
     }

@@ -19,8 +19,8 @@ const RoomListItem = ({
             isActive={isActive}
             publishing={publishing === "publishing"}
         >
-            <RoomTitle>{room.description}</RoomTitle>
-            <ParticipantList participants={room.participants} />
+            <RoomTitle isActive={isActive}>{room.description}</RoomTitle>
+            <ParticipantList participants={room.participants} isActive={isActive} />
         </RoomContainer>  
     )
 }

@@ -17,24 +17,22 @@ class RemoteStream extends PureComponent {
     render() {
         const { stream, iceState } = this.props;
         return (
-            <div>
+            <StreamContainer>
                 {stream !== null ? (
                     <div>
                         {iceState === "connected" ? (
-                            <StreamContainer>
-                                <StreamVideo 
-                                    ref={this.vidRef}
-                                    autoPlay
-                                    playsInline
-                                    controls={false} 
-                                />
-                            </StreamContainer>
+                            <StreamVideo 
+                                ref={this.vidRef}
+                                autoPlay
+                                playsInline
+                                controls={false} 
+                            />
                         ) : (
                             <div>Joining...</div>
                         )}
                     </div>
                 ) : null}
-            </div>
+            </StreamContainer>
         )
     }
 }

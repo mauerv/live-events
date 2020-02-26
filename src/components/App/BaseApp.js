@@ -43,7 +43,7 @@ class BaseApp extends Component {
 								activeRoom={user.activeRoom}
 								publishing={user.published}
 							/>
-							<StreamGrid /> 
+							<StreamGrid />
 						</AppContainer>
 					) : (
 						<AppContainer>

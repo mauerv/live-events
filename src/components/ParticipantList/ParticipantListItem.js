@@ -6,10 +6,10 @@ import {
     ParticipantStatus,
 } from './styles';
 
-const ParticipantListItem = ({ participant }) => (
+const ParticipantListItem = ({ participant, isActive }) => (
     <ParticipantContainer>
         <ParticipantStatus></ParticipantStatus>
-        <ParticipantName>{participant.display}</ParticipantName>
+        <ParticipantName isActive={isActive}>{participant.display}</ParticipantName>
     </ParticipantContainer>
 );
 
