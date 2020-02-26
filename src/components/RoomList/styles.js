@@ -1,11 +1,12 @@
 import styled from 'styled-components';
+import Typography from '@material-ui/core/Typography';
 
 export const RoomListContainer = styled.div`
     background-color: #fedea3;
     width: 20%;
 `
 
-export const RoomListTitle = styled.h1`
+export const RoomListTitle = styled(Typography)`
     margin: 0;
     font-size: 1.3rem;
     background-color: #b86953;

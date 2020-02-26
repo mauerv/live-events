@@ -6,17 +6,29 @@ import theme from './theme';
 import { StylesProvider } from '@material-ui/styles';
 import configureStore from './store/configureStore';
 
-import App from './components/App/App';
-
 const store = configureStore();
 
-ReactDOM.render(
-    <StylesProvider injectFirst>
-        <MuiThemeProvider theme={theme}>
-            <Provider store={store}>
-                <App />
-            </Provider>
-        </MuiThemeProvider>
-    </StylesProvider>, 
-    document.getElementById('root')
-);
+const rootEl = document.getElementById('root')
+
+let render = () => {
+    const App = require('./components/App/App').default;
+
+    ReactDOM.render(
+        <Provider store={store}>
+            <StylesProvider injectFirst>
+                <MuiThemeProvider theme={theme}>
+                    <App />
+                </MuiThemeProvider>
+            </StylesProvider>
+        </Provider>, 
+        rootEl
+    );
+}
+
+if (module.hot) {
+    module.hot.accept('./components/App/App', () => {
+        setTimeout(render)
+    })
+}
+
+render()
