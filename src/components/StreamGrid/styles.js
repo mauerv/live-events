@@ -17,7 +17,9 @@ export const StreamOverlayContainer = styled.div`
     top: 0;
     bottom: 0;
     background-color: black;
-    display: ${props => props.isPublishing ? 'auto' : 'none'};
+    display: ${props => props.isPublishing ? 'flex' : 'none'};
+    justify-content: center;
+    align-items: center;
     opacity: 0.6;
 `
 
