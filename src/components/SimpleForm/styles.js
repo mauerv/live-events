@@ -1,34 +1,23 @@
+import React from 'react';
 import styled from 'styled-components';
+
+import TextField from '@material-ui/core/TextField';
+import Button from '@material-ui/core/Button';
 
 export const SimpleFormContainer = styled.form`
     display: flex;
-    flex-direction: column;
+    justify-content: space-between;
     align-items: center;
 `
 
-export const SimpleFormInput = styled.input`
-    padding: 4px 20px;
-    border-radius: 4px;
-    margin-bottom: 10px;
-    font-size: 1rem;
+export const SimpleFormInput = styled(({ ...rest }) => (
+    <TextField margin="normal" fullWidth label="Nickname" {...rest} />
+))`
+    margin: 0 10px 10px 0;
 `
 
-export const SimpleFormSubmit = styled.input`
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    padding: 5px 15px;
-    border-radius: 4px;
-    background-color: #b86953;
-    color: white;
-    font-size: 1.1rem;
-    border: none;
-    width: 50%;
-    &:hover {
-        cursor: pointer;
-    }
-    &:disabled {
-        opacity: 50%;
-        cursor: auto;
-    }
+export const SimpleFormSubmit = styled(({ children, ...rest }) => (
+    <Button {...rest} variant="contained" color="primary">{children}</Button>
+))`
+
 `

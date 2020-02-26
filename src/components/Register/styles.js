@@ -1,31 +1,33 @@
+import React from 'react';
 import styled from 'styled-components';
 
-export const RegisterContainer = styled.div`
+import Container from '@material-ui/core/Container';
+import Typography from '@material-ui/core/Typography';
+import Box from '@material-ui/core/Box';
+
+export const RegisterContainer = styled(Container)`
     height: 100vh;
-    background-color: #f08f58;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-
 `
 
-export const RegisterTitle = styled.h1`
-    color: white;
-    padding: 20px 50px;
-    margin-bottom: 0;
-    background-color: #b86953;
+export const RegisterTitle = styled(({ children, ...rest }) => (
+    <Box color="primary.light">
+        <Typography variant="h1" {...rest}>{ children }</Typography>
+    </Box>
+))`
 `
 
-export const RegisterPrompt = styled.p`
-    color: white;
-    margin: 5px;
-    font-size: 1.1rem;
+export const RegisterPrompt = styled(({ children, ...rest }) => (
+    <Box color="primary.dark">
+        <Typography {...rest}>{ children }</Typography>
+    </Box>
+))`
+    margin-bottom: 10px;
 `
 
-export const RegisterDescription = styled.p`
-    color: white;
-    font-size: 1.25rem;
-    text-align: center;
+export const RegisterDescription = styled(Typography)`
+    margin: 10px;
 `
-

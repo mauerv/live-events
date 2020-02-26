@@ -5,7 +5,7 @@ import Register from '../Register/Register';
 import Loading from '../Loading/Loading';
 import StreamGrid from '../StreamGrid/StreamGrid';
 
-import { Body } from './styles';
+import { AppContainer } from './styles';
 
 import { 
 	registerInRoom,
@@ -36,7 +36,7 @@ class BaseApp extends Component {
 				{janus && isRoomListSet ? (
 					<div>
 					{user.registered === "registered" ? (
-						<Body>
+						<AppContainer>
 							<RoomList 
 								roomList={roomList} 
 								onRoomClick={this.changeActiveRoom} 
@@ -44,9 +44,11 @@ class BaseApp extends Component {
 								publishing={user.published}
 							/>
 							<StreamGrid /> 
-						</Body>
+						</AppContainer>
 					) : (
-						<Register initializeApp={this.manageRooms} />
+						<AppContainer>
+							<Register initializeApp={this.manageRooms} />
+						</AppContainer>
 					)}
 					</div>
 				) : <Loading />}

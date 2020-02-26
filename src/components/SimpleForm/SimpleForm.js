@@ -14,12 +14,16 @@ const SimpleForm = ({
 }) => (
     <SimpleFormContainer onSubmit={onSubmit}>
         <SimpleFormInput
+            id="testing"
             type="text"
             value={value}
             onChange={onChange}
             autoFocus
         />
-        <SimpleFormSubmit type="submit" value="Join" disabled={submitDisabled} />
+        <SimpleFormSubmit disabled={submitDisabled} type="submit" >
+            Join
+        </SimpleFormSubmit>
+        
     </SimpleFormContainer>
 );
 

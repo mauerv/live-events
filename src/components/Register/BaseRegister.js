@@ -14,17 +14,17 @@ class Register extends Component {
         const { user } = this.props;
         return (
             <RegisterContainer>
-                <RegisterTitle>Welcome to Eventis</RegisterTitle>
+                <RegisterTitle>Welcome to Events</RegisterTitle>
                 <RegisterDescription>
-                    Welcome to an experiment on digital events. Please input a nickname to use at the rooms.
+                    An experiment in digital events. Please input a nickname to use at the rooms.
                 </RegisterDescription>
-                {user.registered === 'registering' ? <RegisterPrompt>Please wait while we set up...</RegisterPrompt> : null}
                 <SimpleForm 
                     onChange={this.handleChange} 
                     onSubmit={this.handleSubmit} 
                     value={user.username} 
                     submitDisabled={user.registered === 'registering'}
                 />
+                {user.registered === 'registering' ? <RegisterPrompt>Please wait while we set up...</RegisterPrompt> : null}
             </RegisterContainer>
         );
     }

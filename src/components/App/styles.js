@@ -1,6 +1,8 @@
 import styled from 'styled-components';
 
-export const Body = styled.div`
-    display: flex;
+import Container from '@material-ui/core/Container';
+
+export const AppContainer = styled(Container)`
+    height: 100vh;
 `
 
