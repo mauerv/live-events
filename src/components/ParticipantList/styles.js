@@ -1,3 +1,4 @@
+import React from 'react';
 import styled from 'styled-components';
 
 import Typography from '@material-ui/core/Typography';
@@ -10,7 +11,9 @@ export const ParticipantContainer = styled.div`
     margin: 5px auto;
 `
  
-export const ParticipantName = styled(Typography)`
+export const ParticipantName = styled(({ isActive, children, ...rest }) => (
+    <Typography {...rest}>{children}</Typography>
+))`
     font-weight: ${props => props.isActive ? 400 : 200};
     margin-left: 5px;
     line-height: 1;

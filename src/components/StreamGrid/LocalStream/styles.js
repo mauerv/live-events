@@ -7,7 +7,7 @@ export const StreamContainer = styled(({ children, ...rest }) => (
    <Grid item md={4} xs={6} {...rest}>{children}</Grid> 
 ))`
     position: relative;
-    object-fit: fill;
+    height: 100%;
 `
 
 export const StreamVideo = styled.video `

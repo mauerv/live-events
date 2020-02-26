@@ -5,7 +5,10 @@ import Grid from '@material-ui/core/Grid';
 
 export const StreamContainer = styled(({ children, ...rest }) => (
     <Grid item md={4} xs={6} {...rest}>{children}</Grid>
-))``
+))`
+    position: relative;
+    height: 100%;
+`
 
 export const StreamVideo = styled.video `
     width: 100%;
