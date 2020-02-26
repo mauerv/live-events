@@ -65,7 +65,7 @@ export const publish = (handle, useAudio) => {
         error: error => {
             Janus.error("WebRTC publish error:", error);
             if (useAudio) {
-                publish(false);
+                publish(handle, false);
             }
         }
     });
