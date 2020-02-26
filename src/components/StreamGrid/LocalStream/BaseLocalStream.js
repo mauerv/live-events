@@ -2,10 +2,15 @@ import React, { PureComponent } from 'react';
 import { Janus } from 'janus-gateway';
 
 import StreamOverlay from '../StreamOverlay';
+import Videocam from '@material-ui/icons/Videocam';
+import VideocamOff from '@material-ui/icons/VideocamOff';
+import Mic from '@material-ui/icons/Mic';
+import MicOff from '@material-ui/icons/MicOff';
 
 import { 
     StreamContainer,
     StreamVideo,
+    StreamControls,
 } from './styles'
 
 class LocalGridItem extends PureComponent {
@@ -17,8 +22,6 @@ class LocalGridItem extends PureComponent {
     }
 
     render() {
-        console.log("I'm rendering with user:", this.props.user);
-        
         const { user } = this.props;
 
         return (
@@ -29,14 +32,21 @@ class LocalGridItem extends PureComponent {
                     playsInline
                     controls={false} 
                     muted="muted"
+                    objSrc={null}
                 ></StreamVideo>
                 <StreamOverlay isPublishing={user.published === "publishing"} text="Joining..." />
-                <button onClick={this.toggleAudio}>
-                    {user.publishAudio ? "Mute" : "Unmute"}
-                </button>
-                <button onClick={this.toggleVideo}>
-                    {user.publishVideo ? "Video Off" : "Video On"}
-                </button>
+                <StreamControls>
+                    {user.publishAudio ? (
+                        <MicOff onClick={this.toggleAudio} fontSize="large" color="error"/>
+                    ) : (
+                        <Mic onClick={this.toggleAudio} fontSize="large" color="error"/>
+                    )}
+                    {user.publishVideo ? (
+                        <VideocamOff onClick={this.toggleVideo} fontSize="large" color="error"/>
+                    ) : (
+                        <Videocam onClick={this.toggleVideo} fontSize="large" color="error" />
+                    )}
+                </StreamControls>
             </StreamContainer>
         );
     }
