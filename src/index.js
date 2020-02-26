@@ -10,6 +10,8 @@ import App from './components/App/App';
 
 const store = configureStore();
 
+const rootEl = document.getElementById('root')
+
 ReactDOM.render(
     <StylesProvider injectFirst>
         <MuiThemeProvider theme={theme}>
@@ -18,5 +20,5 @@ ReactDOM.render(
             </Provider>
         </MuiThemeProvider>
     </StylesProvider>, 
-    document.getElementById('root')
+    rootEl
 );
