@@ -37,14 +37,14 @@ class LocalGridItem extends PureComponent {
                 <StreamOverlay isPublishing={user.published === "publishing"} text="Joining..." />
                 <StreamControls>
                     {user.publishAudio ? (
-                        <MicOff onClick={this.toggleAudio} fontSize="large" color="error"/>
-                    ) : (
                         <Mic onClick={this.toggleAudio} fontSize="large" color="error"/>
+                    ) : (
+                        <MicOff onClick={this.toggleAudio} fontSize="large" color="error"/>
                     )}
                     {user.publishVideo ? (
-                        <VideocamOff onClick={this.toggleVideo} fontSize="large" color="error"/>
+                        <Videocam onClick={this.toggleVideo} fontSize="large" color="error"/>
                     ) : (
-                        <Videocam onClick={this.toggleVideo} fontSize="large" color="error" />
+                        <VideocamOff onClick={this.toggleVideo} fontSize="large" color="error" />
                     )}
                 </StreamControls>
             </StreamContainer>
