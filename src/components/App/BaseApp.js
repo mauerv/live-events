@@ -78,13 +78,26 @@ class BaseApp extends Component {
 					onSetHandle(room, pluginHandle);
 					registerInRoom(room, user.username, pluginHandle);
 				},
-				error: error => console.log(error),
+				error: error => {
+					console.log("Error attaching plugin for room", room, error)
+				},
+				consentDialog: on => {
+					console.log("The consent dialog should be", on, "on room", on);
+				},
+				webrtcState: active => {
+					console.log("The webrtcstate is", active, "room", room);
+				},
 				iceState: state => {
+					console.log("The iceState is:", state, "room", room);
 					if (state === "connected") {
 						onSetPublishedStatus("published");
 					}
 				},
+				mediaState: (medium, on) => {
+					console.log("Publishing in:", medium, "is", on, "room", room);
+				},
 				onmessage: (msg, jsep) => {
+					console.log("There is a new message:", msg, "on room", room);
 					const { user } = that.props;
 					const handle = that.props.handles[room];
 					const event = msg['videoroom'];
@@ -132,6 +145,9 @@ class BaseApp extends Component {
 					}
 				},
 				onlocalstream: stream => onSetStream(stream),
+				oncleanup: () => {
+					console.log("I'm cleaning up room", room);
+				}
 			})
 		});
 	}
@@ -157,13 +173,24 @@ class BaseApp extends Component {
 						pluginHandle
 					);
 				},
-				error: error => console.log(error),
+				error: error => {
+					console.log("Error attaching (subscriber) plugin", error, "on room", room);
+				},
 				iceState: state => {
+					console.log("The (Subscriber) ICE state is", state, "in room", room);
 					if (state === "connected") {
 						onSetSubscriptionIceState(publisher.id, "connected");
 					}
 				},
+				mediaState: (medium, on) => {
+					console.log("The mediaState on medium", medium, "is on", on, "in room", room);
+
+				},
+				webrtcState: (on) => {
+					console.log("The webrtcState is", on, "in room", room);
+				},
 				onmessage: (msg, jsep) => {
+					console.log("There is a new (Subscriber) message", msg, "on room", room);
 					const subscriptionHandle = that.props.subscriptions[publisher.id].handle;
 					if (jsep !== undefined) {						
 						subscriptionHandle.createAnswer({
@@ -177,9 +204,12 @@ class BaseApp extends Component {
 					}
 				},
 				onremotestream: stream => {
+					console.log("We have a new stream (Subscriber", stream, "on room", room);
 					onSetSubscriptionStream(publisher.id, stream);
 				},
-				oncleanup: () => {}
+				oncleanup: () => {
+					console.log("Cleaning up (Subscriber) on room", room)
+				},
 			})
 		})
 	}	
