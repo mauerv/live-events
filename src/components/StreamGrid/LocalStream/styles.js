@@ -11,7 +11,9 @@ export const StreamContainer = styled(({ children, ...rest }) => (
 `
 
 export const StreamVideo = styled.video `
-    width: 100%;
+    height: 240px;
+    width: 320px;
+    object-fit: fill;
 `
 
 export const StreamControls = styled.div`

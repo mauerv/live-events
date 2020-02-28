@@ -27,8 +27,6 @@ class LocalGridItem extends PureComponent {
         return (
             <StreamContainer>
                 <StreamVideo 
-                    height="240px"
-                    width="320px"
                     ref={this.vidRef}
                     autoPlay
                     playsInline
