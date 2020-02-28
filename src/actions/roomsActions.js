@@ -16,6 +16,7 @@ export const doSetRoomList = janus => dispatch => {
                         type: SET_ROOM_LIST_SUCCESS,
                         payload: roomList.list,
                     });
+                    pluginHandle.detach();
                 },
                 error: error => dispatch({ type: SET_ROOM_LIST_ERROR }),
             })
