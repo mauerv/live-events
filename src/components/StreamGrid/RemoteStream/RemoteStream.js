@@ -4,6 +4,7 @@ import { Janus } from 'janus-gateway';
 import { 
     StreamContainer,
     StreamVideo,
+    DynamicHeight,
 } from './styles'
 
 class RemoteStream extends PureComponent {
@@ -18,16 +19,18 @@ class RemoteStream extends PureComponent {
         const { stream, iceState } = this.props;
         return (
             <StreamContainer>
-                {stream !== null ? (
-                    <div>
-                        <StreamVideo 
-                            ref={this.vidRef}
-                            autoPlay
-                            playsInline
-                            controls={false} 
-                        />
-                    </div>
-                ) : null}
+                <DynamicHeight>
+                    {stream !== null ? (
+                        <div>
+                            <StreamVideo 
+                                ref={this.vidRef}
+                                autoPlay
+                                playsInline
+                                controls={false} 
+                            />
+                        </div>
+                    ) : null}
+                </DynamicHeight>
             </StreamContainer>
         )
     }

@@ -11,6 +11,7 @@ import {
     StreamContainer,
     StreamVideo,
     StreamControls,
+    DynamicHeight,
 } from './styles'
 
 class LocalGridItem extends PureComponent {
@@ -26,27 +27,29 @@ class LocalGridItem extends PureComponent {
 
         return (
             <StreamContainer>
-                <StreamVideo 
-                    ref={this.vidRef}
-                    autoPlay
-                    playsInline
-                    controls={false} 
-                    muted="muted"
-                    objSrc={null}
-                ></StreamVideo>
-                <StreamOverlay isPublishing={user.published === "publishing"} text="Joining..." />
-                <StreamControls>
-                    {user.publishAudio ? (
-                        <Mic onClick={this.toggleAudio} fontSize="large" color="error"/>
-                    ) : (
-                        <MicOff onClick={this.toggleAudio} fontSize="large" color="error"/>
-                    )}
-                    {user.publishVideo ? (
-                        <Videocam onClick={this.toggleVideo} fontSize="large" color="error"/>
-                    ) : (
-                        <VideocamOff onClick={this.toggleVideo} fontSize="large" color="error" />
-                    )}
-                </StreamControls>
+                <DynamicHeight>
+                    <StreamVideo 
+                        ref={this.vidRef}
+                        autoPlay
+                        playsInline
+                        controls={false} 
+                        muted="muted"
+                        objSrc={null}
+                    ></StreamVideo>
+                    <StreamOverlay isPublishing={user.published === "publishing"} text="Joining..." />
+                    <StreamControls>
+                        {user.publishAudio ? (
+                            <Mic onClick={this.toggleAudio} fontSize="large" color="error"/>
+                        ) : (
+                            <MicOff onClick={this.toggleAudio} fontSize="large" color="error"/>
+                        )}
+                        {user.publishVideo ? (
+                            <Videocam onClick={this.toggleVideo} fontSize="large" color="error"/>
+                        ) : (
+                            <VideocamOff onClick={this.toggleVideo} fontSize="large" color="error" />
+                        )}
+                    </StreamControls>
+                </DynamicHeight>
             </StreamContainer>
         );
     }
