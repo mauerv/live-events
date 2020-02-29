@@ -1,9 +1,7 @@
 export default [
-    {urls: "stun:voip0.prosky.co:3478"},
-    {urls: "turn:voip0.prosky.co:3478?transport=udp",
+    {urls: "stun:54.244.72.119:3478"},
+    {urls: "turn:54.244.72.119:3478",
       username: "voip",
-      credential: "fUnWS9QP"
+      credential: "m0fn9db8s"
     },
-    { urls: "stun:stun.l.google.com:19302" }, 
-    { urls: "stun:stun1.l.google.com:19302" }, 
 ];
