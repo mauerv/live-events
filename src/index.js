@@ -9,31 +9,20 @@ import {
 import theme from './theme';
 import configureStore from './store/configureStore';
 
+import App from './components/App/App';
+
 const store = configureStore();
 
-const rootEl = document.getElementById('root')
+ReactDOM.render(
+    <Provider store={store}>
+        <StylesProvider injectFirst>
+            <MuiThemeProvider theme={theme}>
+                <ThemeProvider theme={theme}>
+                    <App />
+                </ThemeProvider>
+            </MuiThemeProvider>
+        </StylesProvider>
+    </Provider>, 
+    document.getElementById('root')
+);
 
-let render = () => {
-    const App = require('./components/App/App').default;
-
-    ReactDOM.render(
-        <Provider store={store}>
-            <StylesProvider injectFirst>
-                <MuiThemeProvider theme={theme}>
-                    <ThemeProvider theme={theme}>
-                        <App />
-                    </ThemeProvider>
-                </MuiThemeProvider>
-            </StylesProvider>
-        </Provider>, 
-        rootEl
-    );
-}
-
-if (module.hot) {
-    module.hot.accept('./components/App/App', () => {
-        setTimeout(render)
-    })
-}
-
-render()

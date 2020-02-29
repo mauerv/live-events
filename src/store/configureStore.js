@@ -16,13 +16,6 @@ export default () => {
         rootReducer,
         composedEnhancer
     );
-      
-    if (module.hot && process.env.NODE_ENV !== 'production') {
-        module.hot.accept('../reducers', () => {
-            const newRootReducer = require('../reducers').default
-            store.replaceReducer(newRootReducer)
-        })
-	}
 
     return store;
 }
