@@ -1,4 +1,8 @@
 export default [
+    { urls: "stun:54.244.72.119:3478" },
+    { urls: "turn:54.244.72.119:3478",
+        username: "voip",
+        credential: "m0fn9db8s"
+    },
     { urls: "stun:stun.l.google.com:19302" }, 
-    { urls: "stun:stun1.l.google.com:19302" }, 
 ];

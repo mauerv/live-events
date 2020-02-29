@@ -93,7 +93,7 @@ class BaseApp extends Component {
 					const event = msg['videoroom'];
 
 					if (event !== undefined) {
-						if (event === "joined") {     						   
+						if (event === "joined") {     				   
 							if (room === user.activeRoom) {
 								onSetRegisteredStatus("registered");
 								that.publishOwnFeed(handle, user.publishAudio);
@@ -120,10 +120,11 @@ class BaseApp extends Component {
 							}
 							if (typeof msg.unpublished === "number") {
 								// cleanup state and janus handle
-								let subscriptionHandle = that.props.subscriptions[msg.unpublished].handle;
-								subscriptionHandle.detach();
 								onRemovePublisher(msg.unpublished);
-								onRemoveSubscription(msg.unpublished);
+								if (room === user.activeRoom) {
+									onRemoveSubscription(msg.unpublished);
+								}
+								
 							}
 							if (msg.publishers !== undefined) {			
 								onSetPublisherList(msg.publishers, room);
