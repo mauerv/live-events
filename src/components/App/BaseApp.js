@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 
-import RoomList from '../RoomList/RoomList';
-import Register from '../Register/Register';
-import Loading from '../Loading/Loading';
-import StreamGrid from '../StreamGrid/StreamGrid';
+import RoomList from 'components/RoomList/RoomList';
+import Register from 'components/Register/Register';
+import Loading from 'components/Loading/Loading';
+import StreamGrid from 'components/StreamGrid/StreamGrid';
 
 import { AppContainer } from './styles';
 

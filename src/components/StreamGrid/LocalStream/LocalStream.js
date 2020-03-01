@@ -3,8 +3,8 @@ import { connect } from 'react-redux';
 import { 
     doToggleAudio,
     doToggleVideo,
-} from '../../../actions';
-import { getActiveHandle, getUser } from '../../../selectors';
+} from 'actions';
+import { getActiveHandle, getUser } from 'selectors';
 
 import BaseLocalStream from './BaseLocalStream';
 

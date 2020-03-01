@@ -1,6 +1,6 @@
 import React from 'react';
 
-import ParticipantList from '../ParticipantList/ParticipantList'
+import ParticipantList from 'components/ParticipantList/ParticipantList'
 
 import {
     RoomContainer,

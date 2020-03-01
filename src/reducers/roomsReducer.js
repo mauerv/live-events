@@ -1,7 +1,7 @@
 import {
     SET_ROOM_LIST_BEGIN, 
     SET_ROOM_LIST_SUCCESS,
-} from '../constants/actionTypes';
+} from 'constants/actionTypes';
 
 export const initialState = {
     rooms: {},

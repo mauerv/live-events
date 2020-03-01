@@ -1,5 +1,5 @@
 import { getRoomIds } from './index';
-import { initialState as roomsInitialState } from '../reducers/roomsReducer';
+import { initialState as roomsInitialState } from 'reducers/roomsReducer';
 
 let state = {
     roomData: roomsInitialState,

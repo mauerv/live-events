@@ -9,7 +9,7 @@ import {
     getHandles,
     getSubscriptions,
     getIsRoomListSet,
-} from '../../selectors';
+} from 'selectors';
 import { 
     doSetHandle,
     doSetSubscription,
@@ -24,7 +24,7 @@ import {
     doRemovePublisher,
     doSetRoomList,
     doSetStream,
-} from '../../actions';
+} from 'actions';
 import { setJanus } from 'features/janus/janusSlice';
 
 import BaseApp from './BaseApp';

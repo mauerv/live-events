@@ -7,9 +7,9 @@ import {
     StylesProvider 
 } from '@material-ui/core/styles';
 import theme from './theme';
-import configureStore from './store/configureStore';
+import configureStore from 'store/configureStore';
 
-import App from './components/App/App';
+import App from 'components/App/App';
 
 const store = configureStore();
 

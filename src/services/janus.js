@@ -1,6 +1,6 @@
 import { Janus } from 'janus-gateway';
 
-import iceServers from '../constants/iceServers';
+import iceServers from 'constants/iceServers';
 
 export const janusInit = callback => {
     Janus.init({

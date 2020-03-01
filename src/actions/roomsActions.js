@@ -2,7 +2,7 @@ import {
     SET_ROOM_LIST_BEGIN,
     SET_ROOM_LIST_SUCCESS,
     SET_ROOM_LIST_ERROR,
-} from '../constants/actionTypes';
+} from 'constants/actionTypes';
 
 export const doSetRoomList = janus => dispatch => {
     dispatch({ type: SET_ROOM_LIST_BEGIN });

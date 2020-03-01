@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import SimpleForm from '../SimpleForm/SimpleForm';
+import SimpleForm from 'components/SimpleForm/SimpleForm';
 
 import { 
     RegisterContainer,

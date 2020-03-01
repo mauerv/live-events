@@ -1,7 +1,7 @@
 import { 
     SET_PUBLISHER_LIST,
     REMOVE_PUBLISHER,
- } from '../constants/actionTypes';
+ } from 'constants/actionTypes';
 
 const initialState = {};
 

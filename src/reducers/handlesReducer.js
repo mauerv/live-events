@@ -1,4 +1,4 @@
-import { SET_HANDLE } from '../constants/actionTypes';
+import { SET_HANDLE } from 'constants/actionTypes';
 
 const initialState = {}
 

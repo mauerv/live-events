@@ -3,7 +3,7 @@ import {
     REMOVE_SUBSCRIPTION,
     SET_SUBSCRIPTION_ICE_STATE,
     SET_SUBSCRIPTION_STREAM,
-} from '../constants/actionTypes';
+} from 'constants/actionTypes';
 
 const initialState = {};
 

@@ -1,4 +1,4 @@
-import userReducer, { initialState as userInitialState } from '../reducers/userReducer';
+import userReducer, { initialState as userInitialState } from 'reducers/userReducer';
 import { 
     doSetUsername,
     doSetActiveRoom, 

@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { Janus } from 'janus-gateway';
 
-import StreamOverlay from '../StreamOverlay';
+import StreamOverlay from 'components/StreamGrid/StreamOverlay';
 import Videocam from '@material-ui/icons/Videocam';
 import VideocamOff from '@material-ui/icons/VideocamOff';
 import Mic from '@material-ui/icons/Mic';

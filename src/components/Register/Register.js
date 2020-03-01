@@ -1,11 +1,11 @@
 import { connect } from 'react-redux';
 
-import { getUser } from '../../selectors';
+import { getUser } from 'selectors';
 
 import {
     doSetRegisteredStatus,
     doSetUsername,
-} from '../../actions';
+} from 'actions';
 
 import BaseRegister from './BaseRegister';
 

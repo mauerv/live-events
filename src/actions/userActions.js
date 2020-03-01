@@ -6,7 +6,7 @@ import {
     SET_STREAM,
     TOGGLE_AUDIO,
     TOGGLE_VIDEO,
-} from '../constants/actionTypes';
+} from 'constants/actionTypes';
 
 export const doSetUsername = username => ({
     type: SET_USERNAME,
