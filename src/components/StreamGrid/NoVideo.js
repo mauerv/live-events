@@ -1,7 +1,5 @@
-import React from 'react';
+import React from "react";
 
-const NoVideo = () => (
-    <div></div>
-);
+const NoVideo = () => <div></div>;
 
-export const NoVideo;
+export default NoVideo;
