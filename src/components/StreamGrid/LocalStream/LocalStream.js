@@ -4,13 +4,13 @@ import {
     doToggleAudio,
     doToggleVideo,
 } from '../../../actions';
-import { getActiveHandle } from '../../../selectors';
+import { getActiveHandle, getUser } from '../../../selectors';
 
 import BaseLocalStream from './BaseLocalStream';
 
 const mapStateToProps = state => ({
     handle: getActiveHandle(state),
-    user: state.user,
+    user: getUser(state),
 });
 
 export default connect(

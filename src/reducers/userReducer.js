@@ -8,7 +8,7 @@ import {
     TOGGLE_VIDEO,
 } from '../constants/actionTypes';
 
-const initialState = {
+export const initialState = {
     username: "",
     activeRoom: 1234,
     registered: false,

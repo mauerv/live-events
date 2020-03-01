@@ -1,5 +1,7 @@
 import { connect } from 'react-redux';
 
+import { getUser } from '../../selectors';
+
 import {
     doSetRegisteredStatus,
     doSetUsername,
@@ -8,7 +10,7 @@ import {
 import BaseRegister from './BaseRegister';
 
 const mapStateToProps = state => ({
-    user: state.user,
+    user: getUser(state),
 });
 
 export default connect(

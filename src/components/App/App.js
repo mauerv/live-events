@@ -1,6 +1,15 @@
 import { connect } from 'react-redux';
 
-import { getRoomList, getRoomIds } from '../../selectors';
+import { 
+    getRoomList, 
+    getRoomIds,
+    getJanus,
+    getUser, 
+    getPublishers,
+    getHandles,
+    getSubscriptions,
+    getIsRoomListSet,
+} from '../../selectors';
 import { 
     doSetJanus,
     doSetHandle,
@@ -21,14 +30,14 @@ import {
 import BaseApp from './BaseApp';
 
 const mapStateToProps = state => ({
-    janus: state.janus,
-    user: state.user,
-    handles: state.handles,
-    subscriptions: state.subscriptions,
-    isRoomListSet: state.roomData.isSet,
-    roomIds: getRoomIds(state.roomData),
+    janus: getJanus(state),
+    user: getUser(state),
+    handles: getHandles(state),
+    subscriptions: getSubscriptions(state),
+    isRoomListSet: getIsRoomListSet(state),
+    roomIds: getRoomIds(state),
     roomList: getRoomList(state),
-    publishers: state.publishers,
+    publishers: getPublishers(state),
 });
 
 export default connect(

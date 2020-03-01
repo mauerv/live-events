@@ -3,7 +3,7 @@ import {
     SET_ROOM_LIST_SUCCESS,
 } from '../constants/actionTypes';
 
-const initialState = {
+export const initialState = {
     rooms: {},
     isSet: false,
 }

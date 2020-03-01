@@ -1,34 +1,50 @@
-export const getRoomList = ({ publishers, roomData, user }) => {  
-    let roomList = [];
+import { createSelector } from 'reselect';
 
-    for (const key in roomData.rooms) {
-        roomData.rooms[key].participants = [];
-    }
+export const getUser  = state => state.user;
 
-    if (roomData.rooms[user.activeRoom] !== undefined) {
-        roomData.rooms[user.activeRoom].participants.push({ display: user.username, id: user.username })
-    }
+export const getJanus  = state => state.janus;
 
-    for (const key in publishers) {
-        let publisher = publishers[key];
-        roomData.rooms[publisher.room].participants.push(publisher);
-    }
+export const getPublishers = state => state.publishers;
 
-    for (const key in roomData.rooms) {
-        roomList.push(roomData.rooms[key]);
-    }
+export const getHandles = state => state.handles;
+
+export const getSubscriptions = state => state.subscriptions;
+
+export const getIsRoomListSet = state => state.roomData.isSet;
+
+export const getRoomData = state => state.roomData;
+
+export const getRoomList = createSelector(
+    [getPublishers, getRoomData, getUser],
+    (publishers, roomData, user) => {
+        let roomList = [];
+        let newRoomData = { ...roomData };
+
+        for (const key in newRoomData.rooms) {
+            newRoomData.rooms[key].participants = [];
+        }
     
-    return roomList;
-}
-
-export const getRoomIds = roomData => {
-    let roomIds = [];
-    for (const key in roomData.rooms) {
-        roomIds.push(roomData.rooms[key].room);
+        if (newRoomData.rooms[user.activeRoom] !== undefined) {
+            newRoomData.rooms[user.activeRoom].participants.push({ display: user.username, id: user.username })
+        }
+    
+        for (const key in publishers) {
+            let publisher = publishers[key];
+            newRoomData.rooms[publisher.room].participants.push(publisher);
+        }
+    
+        for (const key in newRoomData.rooms) {
+            roomList.push(newRoomData.rooms[key]);
+        }
+        
+        return roomList;
     }
-    return roomIds;
-}
+);
 
-export const getActiveHandle = state => {
-    return state.handles[state.user.activeRoom];
-}
+export const getRoomIds = createSelector(
+    getRoomData,
+    roomData => Object.values(roomData.rooms).map(room => room.room)
+);
+    
+export const getActiveHandle = state => state.handles[state.user.activeRoom];
+
