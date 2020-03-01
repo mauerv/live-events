@@ -1,4 +1,3 @@
-import { doSetJanus } from './janusActions';
 import { doSetHandle } from './handlesActions';
 import { doSetRoomList } from './roomsActions';
 import { 
@@ -22,7 +21,6 @@ import {
 } from './userActions';
 
 export {
-    doSetJanus,
     doSetHandle,
     doSetSubscription,
     doRemoveSubscription,

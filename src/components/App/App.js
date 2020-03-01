@@ -11,7 +11,6 @@ import {
     getIsRoomListSet,
 } from '../../selectors';
 import { 
-    doSetJanus,
     doSetHandle,
     doSetSubscription,
     doRemoveSubscription,
@@ -26,6 +25,7 @@ import {
     doSetRoomList,
     doSetStream,
 } from '../../actions';
+import { setJanus } from 'features/janus/janusSlice';
 
 import BaseApp from './BaseApp';
 
@@ -43,7 +43,7 @@ const mapStateToProps = state => ({
 export default connect(
     mapStateToProps,
     { 
-        onSetJanus: doSetJanus,
+        setJanus,
         onSetHandle: doSetHandle,
         onSetSubscription: doSetSubscription,
         onRemoveSubscription: doRemoveSubscription,

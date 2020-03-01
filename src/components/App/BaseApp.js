@@ -18,7 +18,7 @@ import {
 class BaseApp extends Component {
 	componentDidMount() {
 		janusInit(janus => {
-			this.props.onSetJanus(janus);
+			this.props.setJanus(janus);
 			this.props.onSetRoomList(janus);
 		});
 	}

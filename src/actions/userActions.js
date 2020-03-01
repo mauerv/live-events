@@ -29,8 +29,8 @@ export const doSetPublishedStatus = status => ({
 });
 
 export const doSetStream = stream => ({
-        type: SET_STREAM,
-        payload: stream,
+    type: SET_STREAM,
+    payload: stream,
 });
 
 export const doToggleAudio = () => ({ type: TOGGLE_AUDIO });
