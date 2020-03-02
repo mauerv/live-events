@@ -2,8 +2,6 @@ import { createSelector } from "@reduxjs/toolkit";
 
 export const getUser = state => state.user;
 
-export const getJanus = state => state.janus;
-
 export const getPublishers = state => state.publishers;
 
 export const getHandles = state => state.handles;

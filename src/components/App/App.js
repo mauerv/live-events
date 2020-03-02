@@ -3,7 +3,6 @@ import { connect } from "react-redux";
 import {
   getRoomList,
   getRoomIds,
-  getJanus,
   getUser,
   getPublishers,
   getHandles,
@@ -25,6 +24,7 @@ import {
   doSetRoomList,
   doSetStream
 } from "actions";
+import { getJanus } from "features/janus/janusSlice";
 import { setJanus } from "features/janus/janusSlice";
 
 import BaseApp from "./BaseApp";

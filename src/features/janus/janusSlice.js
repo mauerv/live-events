@@ -10,6 +10,8 @@ const janusSlice = createSlice({
   }
 });
 
+export const getJanus = state => state.janus;
+
 export const { setJanus } = janusSlice.actions;
 
 export default janusSlice.reducer;
