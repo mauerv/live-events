@@ -16,15 +16,20 @@ import {
 } from "../../services/janus";
 
 class BaseApp extends Component {
+  state = {
+    janus: null
+  };
+
   componentDidMount() {
     janusInit(janus => {
-      this.props.setJanus(janus);
+      this.setState({ janus });
       this.props.onSetRoomList(janus);
     });
   }
 
   render() {
-    const { janus, user, isRoomListSet, roomList } = this.props;
+    const { janus } = this.state;
+    const { user, isRoomListSet, roomList } = this.props;
 
     return (
       <div>
@@ -54,8 +59,8 @@ class BaseApp extends Component {
   }
 
   manageRooms = () => {
+    const { janus } = this.state;
     const {
-      janus,
       user,
       roomIds,
       onRemoveSubscription,
@@ -141,8 +146,8 @@ class BaseApp extends Component {
   };
 
   newRemoteFeeds = (room, publishers) => {
+    const { janus } = this.state;
     const {
-      janus,
       onSetSubscription,
       onSetSubscriptionStream,
       onSetSubscriptionIceState
