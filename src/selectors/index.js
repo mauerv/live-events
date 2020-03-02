@@ -1,7 +1,6 @@
 import { createSelector } from "@reduxjs/toolkit";
 import { getPublishers } from "features/publishers/publishersSlice";
-
-export const getUser = state => state.user;
+import { getUser } from "features/user/userSlice";
 
 export const getHandles = state => state.handles;
 

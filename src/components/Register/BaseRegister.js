@@ -32,16 +32,16 @@ class Register extends Component {
     );
   }
 
-  handleChange = e => this.props.onSetUsername(e.target.value);
+  handleChange = e => this.props.setUsername(e.target.value);
 
   handleSubmit = e => {
     e.preventDefault();
-    const { user, onSetRegisteredStatus, initializeApp } = this.props;
+    const { user, setRegistered, initializeApp } = this.props;
 
     if (user.registered !== false) return;
     if (user.username.length === 0) return;
 
-    onSetRegisteredStatus("registering");
+    setRegistered("registering");
     initializeApp();
   };
 }

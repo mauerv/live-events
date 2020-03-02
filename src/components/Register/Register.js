@@ -1,8 +1,6 @@
 import { connect } from "react-redux";
 
-import { getUser } from "selectors";
-
-import { doSetRegisteredStatus, doSetUsername } from "actions";
+import { getUser, setRegistered, setUsername } from "features/user/userSlice";
 
 import BaseRegister from "./BaseRegister";
 
@@ -11,6 +9,6 @@ const mapStateToProps = state => ({
 });
 
 export default connect(mapStateToProps, {
-  onSetRegisteredStatus: doSetRegisteredStatus,
-  onSetUsername: doSetUsername
+  setRegistered,
+  setUsername
 })(BaseRegister);

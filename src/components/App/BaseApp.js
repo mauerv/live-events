@@ -59,12 +59,12 @@ class BaseApp extends Component {
       user,
       roomIds,
       onRemoveSubscription,
-      onSetRegisteredStatus,
-      onSetPublishedStatus,
+      setRegistered,
+      setPublished,
       setPublishers,
       removePublisher,
       onSetHandle,
-      onSetStream
+      setStream
     } = this.props;
     const that = this;
 
@@ -80,7 +80,7 @@ class BaseApp extends Component {
         webrtcState: active => {},
         iceState: state => {
           if (state === "connected") {
-            onSetPublishedStatus("published");
+            setPublished("published");
           }
         },
         mediaState: (medium, on) => {},
@@ -92,7 +92,7 @@ class BaseApp extends Component {
           if (event !== undefined) {
             if (event === "joined") {
               if (room === user.activeRoom) {
-                onSetRegisteredStatus("registered");
+                setRegistered("registered");
                 that.publishOwnFeed(handle, user.publishAudio);
               }
               let publishers = msg["publishers"];
@@ -134,7 +134,7 @@ class BaseApp extends Component {
             handle.handleRemoteJsep({ jsep: jsep });
           }
         },
-        onlocalstream: stream => onSetStream(stream),
+        onlocalstream: stream => setStream(stream),
         oncleanup: () => {}
       });
     });
@@ -192,18 +192,18 @@ class BaseApp extends Component {
   };
 
   publishOwnFeed = (handle, withAudio) => {
-    this.props.onSetPublishedStatus("publishing");
+    this.props.setPublished("publishing");
     publish(handle, withAudio);
   };
 
   changeActiveRoom = newRoom => {
     const {
       user,
-      onSetActiveRoom,
+      setActiveRoom,
       subscriptions,
       onRemoveSubscription,
-      onSetStream,
-      onSetPublishedStatus,
+      setStream,
+      setPublished,
       publishers,
       handles
     } = this.props;
@@ -211,8 +211,8 @@ class BaseApp extends Component {
     if (newRoom === user.activeRoom) return;
     if (user.published !== "published") return;
 
-    onSetPublishedStatus(false);
-    onSetStream(null);
+    setPublished(false);
+    setStream(null);
     unpublish(handles[user.activeRoom]);
     Object.keys(subscriptions).forEach(key => {
       subscriptions[key].handle.detach();
@@ -224,7 +224,7 @@ class BaseApp extends Component {
     );
 
     this.newRemoteFeeds(newRoom, activeRoomPublishers);
-    onSetActiveRoom(newRoom);
+    setActiveRoom(newRoom);
   };
 }
 

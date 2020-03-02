@@ -3,7 +3,6 @@ import { connect } from "react-redux";
 import {
   getRoomList,
   getRoomIds,
-  getUser,
   getHandles,
   getSubscriptions,
   getIsRoomListSet
@@ -14,12 +13,7 @@ import {
   doRemoveSubscription,
   doSetSubscriptionIceState,
   doSetSubscriptionStream,
-  doSetUsername,
-  doSetActiveRoom,
-  doSetRegisteredStatus,
-  doSetPublishedStatus,
-  doSetRoomList,
-  doSetStream
+  doSetRoomList
 } from "actions";
 import { getJanus, setJanus } from "features/janus/janusSlice";
 import {
@@ -27,6 +21,14 @@ import {
   setPublishers,
   removePublisher
 } from "features/publishers/publishersSlice";
+import {
+  getUser,
+  setUsername,
+  setActiveRoom,
+  setRegistered,
+  setPublished,
+  setStream
+} from "features/user/userSlice";
 
 import BaseApp from "./BaseApp";
 
@@ -45,15 +47,15 @@ export default connect(mapStateToProps, {
   setJanus,
   setPublishers,
   removePublisher,
+  setUsername,
+  setActiveRoom,
+  setRegistered,
+  setPublished,
+  setStream,
   onSetHandle: doSetHandle,
   onSetSubscription: doSetSubscription,
   onRemoveSubscription: doRemoveSubscription,
   onSetSubscriptionIceState: doSetSubscriptionIceState,
   onSetSubscriptionStream: doSetSubscriptionStream,
-  onSetUsername: doSetUsername,
-  onSetActiveRoom: doSetActiveRoom,
-  onSetRegisteredStatus: doSetRegisteredStatus,
-  onSetPublishedStatus: doSetPublishedStatus,
-  onSetStream: doSetStream,
   onSetRoomList: doSetRoomList
 })(BaseApp);

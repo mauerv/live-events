@@ -6,15 +6,6 @@ import {
   doSetSubscriptionIceState,
   doSetSubscriptionStream
 } from "./subscriptionsActions";
-import {
-  doSetUsername,
-  doSetActiveRoom,
-  doSetRegisteredStatus,
-  doSetPublishedStatus,
-  doSetStream,
-  doToggleAudio,
-  doToggleVideo
-} from "./userActions";
 
 export {
   doSetHandle,
@@ -22,12 +13,5 @@ export {
   doRemoveSubscription,
   doSetSubscriptionIceState,
   doSetSubscriptionStream,
-  doSetUsername,
-  doSetActiveRoom,
-  doSetRegisteredStatus,
-  doSetPublishedStatus,
-  doSetStream,
-  doToggleAudio,
-  doToggleVideo,
   doSetRoomList
 };

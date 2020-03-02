@@ -1,7 +1,7 @@
 import { connect } from "react-redux";
 
-import { doToggleAudio, doToggleVideo } from "actions";
-import { getActiveHandle, getUser } from "selectors";
+import { getActiveHandle } from "selectors";
+import { getUser, toggleAudio, toggleVideo } from "features/user/userSlice";
 
 import BaseLocalStream from "./BaseLocalStream";
 
@@ -11,6 +11,6 @@ const mapStateToProps = state => ({
 });
 
 export default connect(mapStateToProps, {
-  onToggleAudio: doToggleAudio,
-  onToggleVideo: doToggleVideo
+  toggleAudio,
+  toggleVideo
 })(BaseLocalStream);
