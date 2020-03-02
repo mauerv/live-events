@@ -5,12 +5,10 @@ import {
   getRoomIds,
   getUser,
   getPublishers,
-  getHandles,
   getSubscriptions,
   getIsRoomListSet
 } from "selectors";
 import {
-  doSetHandle,
   doSetSubscription,
   doRemoveSubscription,
   doSetSubscriptionIceState,
@@ -29,7 +27,6 @@ import BaseApp from "./BaseApp";
 
 const mapStateToProps = state => ({
   user: getUser(state),
-  handles: getHandles(state),
   subscriptions: getSubscriptions(state),
   isRoomListSet: getIsRoomListSet(state),
   roomIds: getRoomIds(state),
@@ -38,7 +35,6 @@ const mapStateToProps = state => ({
 });
 
 export default connect(mapStateToProps, {
-  onSetHandle: doSetHandle,
   onSetSubscription: doSetSubscription,
   onRemoveSubscription: doRemoveSubscription,
   onSetSubscriptionIceState: doSetSubscriptionIceState,

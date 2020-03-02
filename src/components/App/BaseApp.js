@@ -17,7 +17,8 @@ import {
 
 class BaseApp extends Component {
   state = {
-    janus: null
+    janus: null,
+    handles: {}
   };
 
   componentDidMount() {
@@ -28,7 +29,7 @@ class BaseApp extends Component {
   }
 
   render() {
-    const { janus } = this.state;
+    const { janus, handles } = this.state;
     const { user, isRoomListSet, roomList } = this.props;
 
     return (
@@ -43,7 +44,7 @@ class BaseApp extends Component {
                   activeRoom={user.activeRoom}
                   publishing={user.published}
                 />
-                <StreamGrid />
+                <StreamGrid activeHandle={handles[user.activeRoom]} />
               </AppContainer>
             ) : (
               <AppContainer>
@@ -68,7 +69,6 @@ class BaseApp extends Component {
       onSetPublishedStatus,
       onSetPublisherList,
       onRemovePublisher,
-      onSetHandle,
       onSetStream
     } = this.props;
     const that = this;
@@ -77,21 +77,19 @@ class BaseApp extends Component {
       janus.attach({
         plugin: "janus.plugin.videoroom",
         success: pluginHandle => {
-          onSetHandle(room, pluginHandle);
+          this.setState({
+            handles: { ...this.state.handles, [room]: pluginHandle }
+          });
           registerInRoom(room, user.username, pluginHandle);
         },
-        error: error => {},
-        consentDialog: on => {},
-        webrtcState: active => {},
         iceState: state => {
           if (state === "connected") {
             onSetPublishedStatus("published");
           }
         },
-        mediaState: (medium, on) => {},
         onmessage: (msg, jsep) => {
           const { user } = that.props;
-          const handle = that.props.handles[room];
+          const handle = that.state.handles[room];
           const event = msg["videoroom"];
 
           if (event !== undefined) {
@@ -116,7 +114,7 @@ class BaseApp extends Component {
               }
               if (msg.unpublished === "ok") {
                 that.publishOwnFeed(
-                  that.props.handles[user.activeRoom],
+                  that.state.handles[user.activeRoom],
                   user.publishAudio
                 );
               }
@@ -202,6 +200,7 @@ class BaseApp extends Component {
   };
 
   changeActiveRoom = newRoom => {
+    const { handles } = this.state;
     const {
       user,
       onSetActiveRoom,
@@ -209,8 +208,7 @@ class BaseApp extends Component {
       onRemoveSubscription,
       onSetStream,
       onSetPublishedStatus,
-      publishers,
-      handles
+      publishers
     } = this.props;
 
     if (newRoom === user.activeRoom) return;

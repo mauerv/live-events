@@ -1,4 +1,3 @@
-import { doSetHandle } from "./handlesActions";
 import { doSetRoomList } from "./roomsActions";
 import {
   doSetSubscription,
@@ -18,7 +17,6 @@ import {
 } from "./userActions";
 
 export {
-  doSetHandle,
   doSetSubscription,
   doRemoveSubscription,
   doSetSubscriptionIceState,

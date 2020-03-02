@@ -70,16 +70,16 @@ class LocalGridItem extends PureComponent {
   }
 
   toggleAudio = () => {
-    const { handle, onToggleAudio } = this.props;
-    if (handle.isAudioMuted()) handle.unmuteAudio();
-    else handle.muteAudio();
+    const { activeHandle, onToggleAudio } = this.props;
+    if (activeHandle.isAudioMuted()) activeHandle.unmuteAudio();
+    else activeHandle.muteAudio();
     onToggleAudio();
   };
 
   toggleVideo = () => {
-    const { handle, onToggleVideo } = this.props;
-    if (handle.isVideoMuted()) handle.unmuteVideo();
-    else handle.muteVideo();
+    const { activeHandle, onToggleVideo } = this.props;
+    if (activeHandle.isVideoMuted()) activeHandle.unmuteVideo();
+    else activeHandle.muteVideo();
     onToggleVideo();
   };
 }

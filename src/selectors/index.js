@@ -6,8 +6,6 @@ export const getJanus = state => state.janus;
 
 export const getPublishers = state => state.publishers;
 
-export const getHandles = state => state.handles;
-
 export const getSubscriptions = state => state.subscriptions;
 
 export const getIsRoomListSet = state => state.roomData.isSet;
@@ -47,5 +45,3 @@ export const getRoomList = createSelector(
 export const getRoomIds = createSelector(getRoomData, roomData =>
   Object.values(roomData.rooms).map(room => room.room)
 );
-
-export const getActiveHandle = state => state.handles[state.user.activeRoom];

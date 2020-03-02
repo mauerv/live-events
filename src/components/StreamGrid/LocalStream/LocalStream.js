@@ -6,7 +6,6 @@ import { getActiveHandle, getUser } from "selectors";
 import BaseLocalStream from "./BaseLocalStream";
 
 const mapStateToProps = state => ({
-  handle: getActiveHandle(state),
   user: getUser(state)
 });
 
