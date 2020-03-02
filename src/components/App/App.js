@@ -3,12 +3,10 @@ import { connect } from "react-redux";
 import {
   getRoomList,
   getRoomIds,
-  getHandles,
   getSubscriptions,
   getIsRoomListSet
 } from "selectors";
 import {
-  doSetHandle,
   doSetSubscription,
   doRemoveSubscription,
   doSetSubscriptionIceState,
@@ -21,6 +19,7 @@ import {
   setPublishers,
   removePublisher
 } from "features/publishers/publishersSlice";
+import { getHandles, setHandle } from "features/handles/handlesSlice";
 import {
   getUser,
   setUsername,
@@ -52,7 +51,7 @@ export default connect(mapStateToProps, {
   setRegistered,
   setPublished,
   setStream,
-  onSetHandle: doSetHandle,
+  setHandle,
   onSetSubscription: doSetSubscription,
   onRemoveSubscription: doRemoveSubscription,
   onSetSubscriptionIceState: doSetSubscriptionIceState,

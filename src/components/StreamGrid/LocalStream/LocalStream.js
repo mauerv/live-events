@@ -1,6 +1,6 @@
 import { connect } from "react-redux";
 
-import { getActiveHandle } from "selectors";
+import { getActiveHandle } from "features/handles/handlesSlice";
 import { getUser, toggleAudio, toggleVideo } from "features/user/userSlice";
 
 import BaseLocalStream from "./BaseLocalStream";

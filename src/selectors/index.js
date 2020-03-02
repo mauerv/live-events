@@ -1,8 +1,7 @@
 import { createSelector } from "@reduxjs/toolkit";
+
 import { getPublishers } from "features/publishers/publishersSlice";
 import { getUser } from "features/user/userSlice";
-
-export const getHandles = state => state.handles;
 
 export const getSubscriptions = state => state.subscriptions;
 
@@ -43,5 +42,3 @@ export const getRoomList = createSelector(
 export const getRoomIds = createSelector(getRoomData, roomData =>
   Object.values(roomData.rooms).map(room => room.room)
 );
-
-export const getActiveHandle = state => state.handles[state.user.activeRoom];

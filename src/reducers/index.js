@@ -3,8 +3,8 @@ import { combineReducers } from "redux";
 import janusReducer from "features/janus/janusSlice";
 import publishersReducer from "features/publishers/publishersSlice";
 import userReducer from "features/user/userSlice";
+import handlesReducer from "features/handles/handlesSlice";
 
-import handlesReducer from "./handlesReducer";
 import roomsReducer from "./roomsReducer";
 import subscriptionsReducer from "./subscriptionsReducer";
 

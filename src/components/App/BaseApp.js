@@ -63,7 +63,7 @@ class BaseApp extends Component {
       setPublished,
       setPublishers,
       removePublisher,
-      onSetHandle,
+      setHandle,
       setStream
     } = this.props;
     const that = this;
@@ -72,7 +72,7 @@ class BaseApp extends Component {
       janus.attach({
         plugin: "janus.plugin.videoroom",
         success: pluginHandle => {
-          onSetHandle(room, pluginHandle);
+          setHandle({ room, handle: pluginHandle });
           registerInRoom(room, user.username, pluginHandle);
         },
         error: error => {},
@@ -105,6 +105,8 @@ class BaseApp extends Component {
             } else if (event === "event") {
               if (msg.configured === "ok") {
                 // can't directly publish without video, workaround.
+                console.log("I published");
+
                 if (handle.isVideoMuted() === user.publishVideo) {
                   handle.muteVideo();
                 }
@@ -192,6 +194,8 @@ class BaseApp extends Component {
   };
 
   publishOwnFeed = (handle, withAudio) => {
+    console.log("Started to publish");
+
     this.props.setPublished("publishing");
     publish(handle, withAudio);
   };
