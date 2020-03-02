@@ -5,7 +5,10 @@ const handlesSlice = createSlice({
   initialState: {},
   reducers: {
     setHandle(state, action) {
-      state[action.payload.room] = action.payload.handle;
+      console.log(action);
+      let newState = { ...state };
+      newState[action.payload.room] = action.payload.handle;
+      return newState;
     }
   }
 });
