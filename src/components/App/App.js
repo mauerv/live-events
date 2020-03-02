@@ -4,7 +4,6 @@ import {
   getRoomList,
   getRoomIds,
   getUser,
-  getPublishers,
   getHandles,
   getSubscriptions,
   getIsRoomListSet
@@ -19,13 +18,15 @@ import {
   doSetActiveRoom,
   doSetRegisteredStatus,
   doSetPublishedStatus,
-  doSetPublisherList,
-  doRemovePublisher,
   doSetRoomList,
   doSetStream
 } from "actions";
-import { getJanus } from "features/janus/janusSlice";
-import { setJanus } from "features/janus/janusSlice";
+import { getJanus, setJanus } from "features/janus/janusSlice";
+import {
+  getPublishers,
+  setPublishers,
+  removePublisher
+} from "features/publishers/publishersSlice";
 
 import BaseApp from "./BaseApp";
 
@@ -42,6 +43,8 @@ const mapStateToProps = state => ({
 
 export default connect(mapStateToProps, {
   setJanus,
+  setPublishers,
+  removePublisher,
   onSetHandle: doSetHandle,
   onSetSubscription: doSetSubscription,
   onRemoveSubscription: doRemoveSubscription,
@@ -52,7 +55,5 @@ export default connect(mapStateToProps, {
   onSetRegisteredStatus: doSetRegisteredStatus,
   onSetPublishedStatus: doSetPublishedStatus,
   onSetStream: doSetStream,
-  onSetPublisherList: doSetPublisherList,
-  onRemovePublisher: doRemovePublisher,
   onSetRoomList: doSetRoomList
 })(BaseApp);

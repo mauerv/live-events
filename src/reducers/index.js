@@ -1,10 +1,10 @@
 import { combineReducers } from "redux";
 
 import janusReducer from "features/janus/janusSlice";
+import publishersReducer from "features/publishers/publishersSlice";
 
 import userReducer from "./userReducer";
 import handlesReducer from "./handlesReducer";
-import publishersReducer from "./publishersReducer";
 import roomsReducer from "./roomsReducer";
 import subscriptionsReducer from "./subscriptionsReducer";
 

@@ -61,8 +61,8 @@ class BaseApp extends Component {
       onRemoveSubscription,
       onSetRegisteredStatus,
       onSetPublishedStatus,
-      onSetPublisherList,
-      onRemovePublisher,
+      setPublishers,
+      removePublisher,
       onSetHandle,
       onSetStream
     } = this.props;
@@ -97,7 +97,7 @@ class BaseApp extends Component {
               }
               let publishers = msg["publishers"];
               if (publishers !== undefined && publishers.length !== 0) {
-                onSetPublisherList(publishers, room);
+                setPublishers(publishers, room);
                 if (room === user.activeRoom) {
                   that.newRemoteFeeds(room, publishers);
                 }
@@ -117,13 +117,13 @@ class BaseApp extends Component {
               }
               if (typeof msg.unpublished === "number") {
                 // cleanup state and janus handle
-                onRemovePublisher(msg.unpublished);
+                removePublisher(msg.unpublished);
                 if (room === user.activeRoom) {
                   onRemoveSubscription(msg.unpublished);
                 }
               }
               if (msg.publishers !== undefined) {
-                onSetPublisherList(msg.publishers, room);
+                setPublishers(msg.publishers, room);
                 if (room === user.activeRoom) {
                   that.newRemoteFeeds(room, msg.publishers);
                 }
