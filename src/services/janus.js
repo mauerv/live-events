@@ -49,6 +49,7 @@ export const subscribeToPublisher = (room, id, videoCodec, handle) => {
 };
 
 export const publish = (handle, useAudio) => {
+  console.log(handle, useAudio);
   handle.createOffer({
     media: {
       audioRecv: false,
@@ -67,6 +68,8 @@ export const publish = (handle, useAudio) => {
       handle.send({ message: publish, jsep: jsep });
     },
     error: error => {
+      console.log(error);
+
       Janus.error("WebRTC publish error:", error);
       if (useAudio) {
         publish(handle, false);

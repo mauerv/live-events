@@ -105,8 +105,6 @@ class BaseApp extends Component {
             } else if (event === "event") {
               if (msg.configured === "ok") {
                 // can't directly publish without video, workaround.
-                console.log("I published");
-
                 if (handle.isVideoMuted() === user.publishVideo) {
                   handle.muteVideo();
                 }
@@ -194,8 +192,6 @@ class BaseApp extends Component {
   };
 
   publishOwnFeed = (handle, withAudio) => {
-    console.log("Started to publish");
-
     this.props.setPublished("publishing");
     publish(handle, withAudio);
   };
