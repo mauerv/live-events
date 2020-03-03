@@ -11,7 +11,6 @@ import {
   doSetActiveRoom,
   doSetRegisteredStatus,
   doSetPublishedStatus,
-  doSetStream,
   doToggleAudio,
   doToggleVideo
 } from "./userActions";
@@ -27,7 +26,6 @@ export {
   doSetActiveRoom,
   doSetRegisteredStatus,
   doSetPublishedStatus,
-  doSetStream,
   doToggleAudio,
   doToggleVideo,
   doSetRoomList

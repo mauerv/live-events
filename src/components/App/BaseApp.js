@@ -18,7 +18,8 @@ import {
 class BaseApp extends Component {
   state = {
     janus: null,
-    handles: {}
+    handles: {},
+    userStream: null
   };
 
   componentDidMount() {
@@ -29,7 +30,7 @@ class BaseApp extends Component {
   }
 
   render() {
-    const { janus, handles } = this.state;
+    const { janus, handles, userStream } = this.state;
     const { user, isRoomListSet, roomList } = this.props;
 
     return (
@@ -44,7 +45,10 @@ class BaseApp extends Component {
                   activeRoom={user.activeRoom}
                   publishing={user.published}
                 />
-                <StreamGrid activeHandle={handles[user.activeRoom]} />
+                <StreamGrid
+                  activeHandle={handles[user.activeRoom]}
+                  userStream={userStream}
+                />
               </AppContainer>
             ) : (
               <AppContainer>
@@ -68,8 +72,7 @@ class BaseApp extends Component {
       onSetRegisteredStatus,
       onSetPublishedStatus,
       onSetPublisherList,
-      onRemovePublisher,
-      onSetStream
+      onRemovePublisher
     } = this.props;
     const that = this;
 
@@ -137,7 +140,9 @@ class BaseApp extends Component {
             handle.handleRemoteJsep({ jsep: jsep });
           }
         },
-        onlocalstream: stream => onSetStream(stream),
+        onlocalstream: stream => {
+          that.setState({ userStream: stream });
+        },
         oncleanup: () => {}
       });
     });
@@ -206,7 +211,6 @@ class BaseApp extends Component {
       onSetActiveRoom,
       subscriptions,
       onRemoveSubscription,
-      onSetStream,
       onSetPublishedStatus,
       publishers
     } = this.props;
@@ -215,7 +219,7 @@ class BaseApp extends Component {
     if (user.published !== "published") return;
 
     onSetPublishedStatus(false);
-    onSetStream(null);
+    this.setState({ userStream: null });
     unpublish(handles[user.activeRoom]);
     Object.keys(subscriptions).forEach(key => {
       subscriptions[key].handle.detach();

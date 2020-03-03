@@ -18,8 +18,9 @@ class LocalGridItem extends PureComponent {
   vidRef = React.createRef();
 
   componentDidUpdate(prevProps, prevState) {
-    const { stream } = this.props.user;
-    if (stream !== null) Janus.attachMediaStream(this.vidRef.current, stream);
+    const { userStream } = this.props;
+    if (userStream !== null)
+      Janus.attachMediaStream(this.vidRef.current, userStream);
   }
 
   render() {

@@ -3,7 +3,6 @@ import {
   SET_ACTIVE_ROOM,
   SET_REGISTERED_STATUS,
   SET_PUBLISHED_STATUS,
-  SET_STREAM,
   TOGGLE_AUDIO,
   TOGGLE_VIDEO
 } from "constants/actionTypes";
@@ -26,11 +25,6 @@ export const doSetRegisteredStatus = status => ({
 export const doSetPublishedStatus = status => ({
   type: SET_PUBLISHED_STATUS,
   payload: status
-});
-
-export const doSetStream = stream => ({
-  type: SET_STREAM,
-  payload: stream
 });
 
 export const doToggleAudio = () => ({ type: TOGGLE_AUDIO });

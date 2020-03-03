@@ -19,8 +19,7 @@ import {
   doSetPublishedStatus,
   doSetPublisherList,
   doRemovePublisher,
-  doSetRoomList,
-  doSetStream
+  doSetRoomList
 } from "actions";
 
 import BaseApp from "./BaseApp";
@@ -43,7 +42,6 @@ export default connect(mapStateToProps, {
   onSetActiveRoom: doSetActiveRoom,
   onSetRegisteredStatus: doSetRegisteredStatus,
   onSetPublishedStatus: doSetPublishedStatus,
-  onSetStream: doSetStream,
   onSetPublisherList: doSetPublisherList,
   onRemovePublisher: doRemovePublisher,
   onSetRoomList: doSetRoomList
