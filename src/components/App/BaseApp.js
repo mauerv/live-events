@@ -143,7 +143,7 @@ class BaseApp extends Component {
       janus,
       onSetSubscription,
       onSetSubscriptionStream,
-      onSetSubscriptionIceState
+      onSetSubscriptionWebrtcState
     } = this.props;
     const that = this;
 
@@ -160,26 +160,10 @@ class BaseApp extends Component {
           );
         },
         error: error => {},
-        iceState: state => {
-          console.log("Ice State changed", state);
-          if (state === "connected") {
-            onSetSubscriptionIceState(publisher.id, "connected");
-          }
-        },
-        mediaState: (medium, on) => {
-          console.log("Media for medium", medium, "is", on);
-        },
-        webrtcState: on => {
-          console.log("webrtc state is", on);
-        },
         onmessage: (msg, jsep) => {
-          console.log("Got a message", msg);
-          if (jsep !== undefined) {
-            console.log("Got a jsep", jsep);
-          }
-
           const subscriptionHandle =
             that.props.subscriptions[publisher.id].handle;
+
           if (jsep !== undefined) {
             subscriptionHandle.createAnswer({
               jsep: jsep,
@@ -190,15 +174,12 @@ class BaseApp extends Component {
               }
             });
           }
-        },
-        onremotestream: stream => {
-          console.log("There is a remote stream", stream);
 
-          onSetSubscriptionStream(publisher.id, stream);
+          if (msg.started === "ok") {
+            onSetSubscriptionWebrtcState(publisher.id, true);
+          }
         },
-        oncleanup: () => {
-          console.log("Cleaning up the pc");
-        }
+        onremotestream: stream => onSetSubscriptionStream(publisher.id, stream)
       });
     });
   };

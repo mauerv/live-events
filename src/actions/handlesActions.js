@@ -1,6 +1,6 @@
-import { SET_HANDLE } from '../constants/actionTypes';
+import { SET_HANDLE } from "../constants/actionTypes";
 
 export const doSetHandle = (room, handle) => ({
-    type: SET_HANDLE,
-    payload: { room, handle },
+  type: SET_HANDLE,
+  payload: { room, handle }
 });
