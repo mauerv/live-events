@@ -77,12 +77,10 @@ class BaseApp extends Component {
         },
         error: error => {},
         consentDialog: on => {},
-        webrtcState: active => {},
-        iceState: state => {
-          if (state === "connected") {
-            onSetPublishedStatus("published");
-          }
+        webrtcState: active => {
+          if (active) onSetPublishedStatus("published");
         },
+        iceState: state => {},
         mediaState: (medium, on) => {},
         onmessage: (msg, jsep) => {
           const { user } = that.props;
@@ -163,13 +161,23 @@ class BaseApp extends Component {
         },
         error: error => {},
         iceState: state => {
+          console.log("Ice State changed", state);
           if (state === "connected") {
             onSetSubscriptionIceState(publisher.id, "connected");
           }
         },
-        mediaState: (medium, on) => {},
-        webrtcState: on => {},
+        mediaState: (medium, on) => {
+          console.log("Media for medium", medium, "is", on);
+        },
+        webrtcState: on => {
+          console.log("webrtc state is", on);
+        },
         onmessage: (msg, jsep) => {
+          console.log("Got a message", msg);
+          if (jsep !== undefined) {
+            console.log("Got a jsep", jsep);
+          }
+
           const subscriptionHandle =
             that.props.subscriptions[publisher.id].handle;
           if (jsep !== undefined) {
@@ -184,9 +192,13 @@ class BaseApp extends Component {
           }
         },
         onremotestream: stream => {
+          console.log("There is a remote stream", stream);
+
           onSetSubscriptionStream(publisher.id, stream);
         },
-        oncleanup: () => {}
+        oncleanup: () => {
+          console.log("Cleaning up the pc");
+        }
       });
     });
   };

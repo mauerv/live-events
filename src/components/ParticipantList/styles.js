@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 
 import Typography from "@material-ui/core/Typography";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 export const ParticipantListContainer = styled.div``;
 
@@ -25,4 +26,9 @@ export const ParticipantStatus = styled.div`
   width: 15px;
   height: 15px;
   z-index: 1000;
+`;
+
+export const ParticipantLoading = styled(CircularProgress)`
+  width: 15px;
+  height: 15px;
 `;
