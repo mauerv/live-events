@@ -8,9 +8,14 @@ import { StreamGridContainer } from "./styles";
 const StreamGrid = ({ subscriptions }) => {
   return (
     <StreamGridContainer>
-      <LocalStream />
+      <LocalStream gridSize={subscriptions.length + 1} />
       {subscriptions.map((s, i) => (
-        <RemoteStream stream={s.stream} webrtcState={s.webrtcState} key={i} />
+        <RemoteStream
+          stream={s.stream}
+          webrtcState={s.webrtcState}
+          key={i}
+          gridSize={subscriptions.length + 1}
+        />
       ))}
     </StreamGridContainer>
   );

@@ -81,12 +81,16 @@ class BaseApp extends Component {
           if (active) onSetPublishedStatus("published");
         },
         iceState: state => {},
-        mediaState: (medium, on) => {},
+        mediaState: (medium, on) => {
+          console.log(medium, on);
+        },
         onmessage: (msg, jsep) => {
           const { user } = that.props;
           const handle = that.props.handles[room];
           const event = msg["videoroom"];
-
+          if (room === user.activeRoom) {
+            console.log("Message", msg);
+          }
           if (event !== undefined) {
             if (event === "joined") {
               if (room === user.activeRoom) {

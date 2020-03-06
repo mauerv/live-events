@@ -4,7 +4,7 @@ import styled from "styled-components";
 import Grid from "@material-ui/core/Grid";
 
 export const StreamContainer = styled(({ children, ...rest }) => (
-  <Grid item xs={6} {...rest}>
+  <Grid item xs={5} {...rest}>
     {children}
   </Grid>
 ))``;
@@ -17,7 +17,6 @@ export const DynamicHeight = styled.div`
 
 export const StreamVideo = styled.video`
   position: absolute;
-  width: 100%;
   height: 100%;
   object-fit: fill;
   transform: scalex(-1);

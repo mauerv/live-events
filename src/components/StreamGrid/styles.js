@@ -5,12 +5,14 @@ import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 
 export const StreamGridContainer = styled(({ children, ...rest }) => (
-  <Grid item xs={12} sm={9} md={10}>
-    <Grid container spacing={1}>
+  <Grid item xs={12} sm={9}>
+    <Grid container spacing={1} justify="center">
       {children}
     </Grid>
   </Grid>
-))``;
+))`
+  justify-content: center;
+`;
 
 export const StreamOverlayContainer = styled.div`
   position: absolute;
