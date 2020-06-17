@@ -4,7 +4,7 @@ import styled from "styled-components";
 import Grid from "@material-ui/core/Grid";
 
 export const StreamContainer = styled(({ children, ...rest }) => (
-  <Grid item xs={5} {...rest}>
+  <Grid item xs={6} sm={5} {...rest}>
     {children}
   </Grid>
 ))``;
